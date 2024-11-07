@@ -8,8 +8,8 @@ const userRepository = new UserRepository();
 passport.use(
     new GoogleStrategy(
         {
-            clientID: process.env.GOOGLE_CLIENT_ID! || '676050767186-q7p4kshlb01l5u3ibeqrgehic1g6kdfp.apps.googleusercontent.com',
-            clientSecret: process.env.GOOGLE_CLIENT_SECRET! || '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',
+            clientID: process.env.GOOGLE_CLIENT_ID! ,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET! ,
             callbackURL: '/api/auth/google/callback',
         },
         async (accessToken, refreshToken, profile, done) => {
