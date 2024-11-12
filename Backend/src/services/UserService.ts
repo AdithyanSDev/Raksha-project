@@ -14,6 +14,7 @@ const JWT_REFRESH_SECRET =
   process.env.JWT_REFRESH_SECRET || "someSuperSecretRefreshTokenKey";
 
 export class UserService {
+ 
   // Method to generate access token
   generateAccessToken(user: IUser): string {
     return jwt.sign(
@@ -37,11 +38,13 @@ export class UserService {
   private userRepository: UserRepository;
   private otps: Map<string, string>; // Temporary storage for OTPs
   private transporter: nodemailer.Transporter;
+  private forgotOtps: Map<string, string>;
 
   constructor() {
     this.userRepository = new UserRepository();
     this.otps = new Map(); // In-memory storage, ideally replace with Redis or database
-
+    this.forgotOtps = new Map();
+    
     // Setup nodemailer transporter
     this.transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",
@@ -186,6 +189,11 @@ export class UserService {
       throw new Error("User not found");
     }
 
+      // Check if user is blocked
+      if (user.isBlocked) {
+        throw { status: 403, message: 'Your account has been blocked by the admin' };
+      }
+
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
       throw new Error("Invalid credentials");
@@ -227,6 +235,40 @@ export class UserService {
 
     return { accessToken: newAccessToken };
   }
+
+  async generateForgotPasswordOtp(email: string): Promise<string> {
+    const user = await this.userRepository.findUserByEmail(email);
+    if (!user) throw new Error("User with this email does not exist");
+
+    const otp = Math.floor(1000 + Math.random() * 9000).toString();
+    this.forgotOtps.set(email, otp);
+
+    await this.sendForgotPasswordOtp(email, otp);
+    return otp;
+  }
+
+  async sendForgotPasswordOtp(email: string, otp: string): Promise<void> {
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: "Forgot Password OTP",
+      text: `Your OTP for resetting your password is: ${otp}.`,
+    };
+    await this.transporter.sendMail(mailOptions);
+  }
+
+  async verifyForgotPasswordOtp(email: string, otp: string): Promise<void> {
+    const storedOtp = this.forgotOtps.get(email);
+    if (storedOtp !== otp) throw new Error("Invalid OTP");
+
+    this.forgotOtps.delete(email); // OTP can only be used once
+  }
+
+  async resetPassword(email: string, newPassword: string): Promise<void> {
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await this.userRepository.updatePasswordByEmail(email, hashedPassword);
+  }
+
   async getUserProfile(userId: string): Promise<IUser | null> {
     console.log(userId, "userid");
     return this.userRepository.getUserById(userId);
@@ -250,4 +292,12 @@ export class UserService {
   async getUserByid(userId: string): Promise<IUser | null> {
     return this.userRepository.getUserById(userId);
   }
+  async toggleUserStatus(userId: string, isBlocked: boolean) {
+    return this.userRepository.updateUserStatus(userId, isBlocked);
+}
+
+   async getAllUsers(): Promise<IUser[]> {
+      return  this.userRepository.getAllUsers();
+  }
+
 }

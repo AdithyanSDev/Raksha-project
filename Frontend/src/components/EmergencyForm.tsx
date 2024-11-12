@@ -35,13 +35,21 @@ const EmergencyForm: React.FC<EmergencyFormProps> = ({ setIsEmergency, addMessag
     }
   };
 
+  const handleCancel = () => {
+    setIsEmergency(false);
+  };
+
   return (
     <form onSubmit={handleSubmit} className="flex flex-col space-y-2">
       <input type="text" name="name" placeholder="Name" value={formData.name} onChange={handleChange} className="p-2 border border-gray-300 rounded" required />
       <input type="email" name="email" placeholder="Email" value={formData.email} onChange={handleChange} className="p-2 border border-gray-300 rounded" required />
       <input type="tel" name="phone" placeholder="Phone" value={formData.phone} onChange={handleChange} className="p-2 border border-gray-300 rounded" required />
       <input type="text" name="location" placeholder="Location" value={formData.location} onChange={handleChange} className="p-2 border border-gray-300 rounded" required />
-      <button type="submit" className="p-2 bg-red-500 text-white rounded">Submit Emergency</button>
+      <div className="flex space-x-4">
+      <button type="button" onClick={handleCancel} className="p-2 bg-gray-300 text-gray-700 rounded">Cancel</button>
+        <button type="submit" className="p-2 bg-red-500 text-white rounded">Submit Emergency</button>
+       
+      </div>
     </form>
   );
 };

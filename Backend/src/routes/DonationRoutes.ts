@@ -6,18 +6,20 @@ import upload from '../middlewares/upload';
 
 const router = Router();
 
-router.post('/monetary/create-order', MonetaryDonationController.createOrder);
+router.post('/monetary/create-order',authMiddleware, MonetaryDonationController.createOrder);
 router.post('/monetary/verify-payment', MonetaryDonationController.verifyPayment);
 
-// Add upload middleware to handle images for material donations
+
 router.post(
   '/material/create',
-   // Ensure user is authenticated
-  upload.array('materialImages'), // Upload middleware for handling multiple images
+  upload.array('materialImages'), 
   MaterialDonationController.createMaterialDonation
 );
 
 router.post('/material/approve/:id', MaterialDonationController.approveDonation);
 router.post('/material/reject/:id', MaterialDonationController.rejectDonation);
+
+// router.get('/material/all', authMiddleware, MaterialDonationController.getAllMaterialDonations);
+// router.get('/monetary/all', authMiddleware, MonetaryDonationController.getAllMonetaryDonations);
 
 export default router;

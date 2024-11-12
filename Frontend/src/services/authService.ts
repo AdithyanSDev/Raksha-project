@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const API_URL = 'http://localhost:5000/api';
 
@@ -15,7 +16,13 @@ export const loginUser = async (email: string, password: string, latitude: numbe
 
         if (!response.ok) {
             const errorData = await response.json();
-            throw new Error(errorData.message || 'Login failed.');
+
+            // Check for blocked user error
+            if (response.status === 403) {
+                toast.error('You have been blocked by the admin.');
+            } else {
+                throw new Error(errorData.message || 'Login failed.');
+            }
         }
 
         const data = await response.json();
@@ -31,6 +38,7 @@ export const loginUser = async (email: string, password: string, latitude: numbe
         return data;
     } catch (error: any) {
         console.error('Login API error:', error.message);
+        toast.error(error.message); // Display general error message
         throw error;
     }
 };

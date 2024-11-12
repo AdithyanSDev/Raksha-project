@@ -12,6 +12,10 @@ class ChatbotService {
   }
 
   async handleUserMessage(message: string, userInfo: { userId: string, name?: string, email?: string, phone?: string, location?: string }) {
+    if (isEmergency(message)) {
+      // If emergency keywords are detected, skip `run` and return a custom response
+      return { response: " Please fill out the emergency form to report your situation." };
+    }
       // Call the Gemini configuration's run method
       try {
         const response = await run(message); // Pass message to run

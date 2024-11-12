@@ -1,3 +1,5 @@
+// models/User.ts
+
 import mongoose, { Schema, model, Document } from 'mongoose';
 
 export interface IUser extends Document {
@@ -12,10 +14,11 @@ export interface IUser extends Document {
     gender?: string;
     age?: number;
     phoneNumber?: string;
-    profilePicture?: string; 
-    volunteerId?: mongoose.Schema.Types.ObjectId; // Changed to ObjectId for proper referencing
+    profilePicture?: string;
+    volunteerId?: mongoose.Schema.Types.ObjectId;
     role: 'admin' | 'user';
-    refreshToken?: string; 
+    refreshToken?: string;
+    isBlocked: boolean; // Add isBlocked field
 }
 
 const UserSchema = new Schema<IUser>({
@@ -30,12 +33,12 @@ const UserSchema = new Schema<IUser>({
     age: { type: Number, default: 0 },
     phoneNumber: { type: String, default: '' },
     profilePicture: { type: String, default: '' },
-    volunteerId: { type: mongoose.Schema.Types.ObjectId, ref: 'Volunteer', default: null }, // Changed to ObjectId and reference
+    volunteerId: { type: mongoose.Schema.Types.ObjectId, ref: 'Volunteer', default: null },
     role: { type: String, enum: ['admin', 'user'], default: 'user' },
     refreshToken: { type: String },
+    isBlocked: { type: Boolean, default: false }, // Add default false for isBlocked
 }, {
     timestamps: true
 });
 
-// Export the User model
 export const User = model<IUser>('User', UserSchema);

@@ -3,6 +3,13 @@ import axios from 'axios';
 
 const API_URL = 'http://localhost:5000/api/users';
 
+export interface IUser {
+    _id: string;
+    username: string;
+    email: string;
+    isBlocked: boolean;
+    role : 'admin' | 'user';
+}
 
 export const getUserProfile = async () => {
     const token = localStorage.getItem('token'); 
@@ -58,3 +65,13 @@ export const uploadProfilePictureToS3 = async (file: File, token: string) => {
     const response = await axios.post(`${API_URL}/upload-profile-picture`, formData, config);
     return response.data.profilePictureUrl;
   };
+
+  export const fetchUsers = async (): Promise<IUser[]> => {
+    const response = await axios.get("/api/admin/users");
+    return response.data;
+};
+
+export const toggleUserStatus = async (userId: string, newStatus: boolean): Promise<IUser> => {
+    const response = await axios.patch(`/api/admin/users/${userId}/status`, { isBlocked: newStatus });
+    return response.data;
+};

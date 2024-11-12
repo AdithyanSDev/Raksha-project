@@ -16,10 +16,19 @@ export class UserRepository {
     async updateUser(userId: string, userData: Partial<IUser>): Promise<IUser | null> {
         return User.findByIdAndUpdate(userId, userData, { new: true });
     }
+    async updatePasswordByEmail(email: string, newPassword: string): Promise<void> {
+        await User.updateOne({ email }, { password: newPassword });
+      }
     async linkVolunteer(userId: string, volunteerId: string): Promise<void> {
         await User.findByIdAndUpdate(userId, { volunteerId }, { new: true });
     }
     async getUserByid(userId: string): Promise<IUser | null> {
         return User.findById(userId);
+    }
+    async updateUserStatus(userId: string, isBlocked: boolean): Promise<IUser | null> {
+        return User.findByIdAndUpdate(userId, { isBlocked }, { new: true });
+    }
+    async getAllUsers(): Promise<IUser[]> {
+        return await User.find(); // Modify query if you want to apply filters
     }
 }

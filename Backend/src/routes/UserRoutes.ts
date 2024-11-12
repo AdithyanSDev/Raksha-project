@@ -12,6 +12,10 @@ router.post('/login', userController.login);
 router.post('/refresh-token', userController.refreshToken); 
 router.post('/verify-otp', userController.verifyOtp);
 
+router.post("/forgot-password", userController.forgotPassword);
+router.post("/verify-forgot-otp", userController.verifyForgotOtp);
+router.post("/reset-password", userController.resetPassword);
+
 // Define Google OAuth route
 router.get('/auth/google/callback', googleAuthCallback);
 

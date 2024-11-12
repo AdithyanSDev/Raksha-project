@@ -2,18 +2,18 @@
 import EmergencyAlert from '../models/EmergencyAlert';
 
 export class MessageRepository {
-  async sendEmergencyToAdmin(data: {
-    userId: string;
-    name: string;
-    email: string;
-    phone: string;
-    location: string;
-    message: string;
-    timestamp: string;
-  }) {
-    const emergencyAlert = new EmergencyAlert(data);
-    await emergencyAlert.save();
-  }
+  // async sendEmergencyToAdmin(data: {
+  //   userId: string;
+  //   name: string;
+  //   email: string;
+  //   phone: string;
+  //   location: string;
+  //   message: string;
+  //   timestamp: string;
+  // }) {
+  //   const emergencyAlert = new EmergencyAlert(data);
+  //   await emergencyAlert.save();
+  // }
 
   async getAllEmergencyAlerts() {
     return await EmergencyAlert.find().sort({ timestamp: -1 });

@@ -44,3 +44,21 @@ export const createMonetaryDonation = async (data: {
     });
     return response.data;
 };
+
+export const fetchMaterialDonations = async () => {
+    const response = await axios.get(`${API_URL}/material/all`, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+    });
+    return response.data;
+};
+
+export const fetchMonetaryDonations = async () => {
+    const response = await axios.get(`${API_URL}/monetary/all`, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+    });
+    return response.data;
+};
