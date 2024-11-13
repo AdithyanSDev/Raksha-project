@@ -8,6 +8,7 @@ const router = Router();
 
 router.post('/monetary/create-order',authMiddleware, MonetaryDonationController.createOrder);
 router.post('/monetary/verify-payment', MonetaryDonationController.verifyPayment);
+router.get('/monetary/all', MonetaryDonationController.getAllMonetaryDonations);
 
 
 router.post(
@@ -15,11 +16,8 @@ router.post(
   upload.array('materialImages'), 
   MaterialDonationController.createMaterialDonation
 );
-
-router.post('/material/approve/:id', MaterialDonationController.approveDonation);
-router.post('/material/reject/:id', MaterialDonationController.rejectDonation);
-
-// router.get('/material/all', authMiddleware, MaterialDonationController.getAllMaterialDonations);
-// router.get('/monetary/all', authMiddleware, MonetaryDonationController.getAllMonetaryDonations);
+router.get('/material/approved', MaterialDonationController.getApprovedDonations);
+router.get('/material/pending', MaterialDonationController.getPendingDonations);
+router.patch('/material/:id/status', MaterialDonationController.updateDonationStatus);
 
 export default router;

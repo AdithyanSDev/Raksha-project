@@ -6,6 +6,7 @@ const API_URL = 'http://localhost:5000/api/users';
 export interface IUser {
     _id: string;
     username: string;
+    profilePicture:string;
     email: string;
     isBlocked: boolean;
     role : 'admin' | 'user';

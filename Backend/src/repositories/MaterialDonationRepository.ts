@@ -6,15 +6,17 @@ class MaterialDonationRepository {
         console.log(donation,"donation")
         return await donation.save();
     }
-    async updateStatus(donationId: string, status: string): Promise<IMaterialDonation | null> {
-        // Find the donation by ID and update its status
-        return await MaterialDonation.findByIdAndUpdate(donationId, { status }, { new: true });
-    }
-
-    async getAll(): Promise<IMaterialDonation[]> {
-        // Get all material donations
-        return await MaterialDonation.find({});
-    }
+    async findApprovedDonations(): Promise<IMaterialDonation[]> {
+        return await MaterialDonation.find({ status: 'approved' });
+      }
+    
+      async findPendingDonations(): Promise<IMaterialDonation[]> {
+        return await MaterialDonation.find({ status: 'pending' });
+      }
+    
+      async updateDonationStatus(id: string, status: 'approved' | 'rejected'): Promise<IMaterialDonation | null> {
+        return await MaterialDonation.findByIdAndUpdate(id, { status }, { new: true });
+      }
 }
 
 export default new MaterialDonationRepository();

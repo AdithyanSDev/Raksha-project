@@ -14,7 +14,9 @@ class MonetaryDonationRepository {
         return MonetaryDonation.create(donationData);
         
     }
-
+    async getAll() {
+        return await MonetaryDonation.find({});
+    }
     // Additional repository methods can go here
 }
 

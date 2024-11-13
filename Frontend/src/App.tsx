@@ -27,6 +27,8 @@ import '@fontsource/poppins/600.css';
 import ProtectedRoute from "./components/ProtectRoute";
 import UserManagement from "./adminComponents/UserManagement";
 import { ToastContainer } from "react-toastify";
+import MaterialDonationManagement from "./adminComponents/MaterialDonationManagement";
+import MonetaryDonationManagement from "./adminComponents/MonetaryDonationManagement";
 
 
 const App: React.FC = () => {
@@ -80,6 +82,8 @@ const App: React.FC = () => {
           <Route path="/profile" element={<ProtectedRoute component={UserProfile} />} />
           <Route path="/volunteer-register" element={<VolunteerForm />} />
           <Route path="/donation-page" element={<DonationPage />} />
+          <Route path="/donation-management/material" element={<MaterialDonationManagement />} />
+            <Route path="/donation-management/monetary" element={<MonetaryDonationManagement />} />
           <Route path="/alert-management" element={<AlertManagement />} />
           <Route path="/user-management" element={<UserManagement />} />
         </Routes>

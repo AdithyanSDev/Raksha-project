@@ -23,6 +23,20 @@ export const createMaterialDonation = async (data: FormData) => {
 
     return response.data;
 };
+export const fetchApprovedMaterialDonations = async () => {
+    const response = await axios.get(`${API_URL}/material/approved`);
+    return response.data;
+  };
+  
+  export const fetchPendingMaterialDonations = async () => {
+    const response = await axios.get(`${API_URL}/material/pending`);
+    return response.data;
+  };
+  
+  export const updateDonationStatus = async (id: string, status: 'approved' | 'rejected') => {
+    const response = await axios.patch(`${API_URL}/material/${id}/status`, { status });
+    return response.data;
+  };
 
 
 export const createMonetaryDonation = async (data: {
@@ -45,14 +59,7 @@ export const createMonetaryDonation = async (data: {
     return response.data;
 };
 
-export const fetchMaterialDonations = async () => {
-    const response = await axios.get(`${API_URL}/material/all`, {
-        headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-    });
-    return response.data;
-};
+
 
 export const fetchMonetaryDonations = async () => {
     const response = await axios.get(`${API_URL}/monetary/all`, {

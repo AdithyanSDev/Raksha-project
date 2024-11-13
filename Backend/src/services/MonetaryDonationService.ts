@@ -51,6 +51,9 @@ class MonetaryDonationService {
 
         return generatedSignature === signature;
     }
+    async getAllMonetaryDonations() {
+        return await MonetaryDonationRepository.getAll();
+    }
 }
 
 export default new MonetaryDonationService();

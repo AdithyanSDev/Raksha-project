@@ -31,33 +31,39 @@ class MaterialDonationController {
         }
     }
 
-    async approveDonation(req: Request, res: Response) {
-        const donationId = req.params.id;
+    async getApprovedDonations(req: Request, res: Response) {
         try {
-            const updatedDonation = await MaterialDonationService.approveDonation(donationId);
-            if (updatedDonation) {
-                res.json(updatedDonation);
-            } else {
-                res.status(404).json({ error: 'Donation not found' });
-            }
+          const donations = await MaterialDonationService.getApprovedDonations();
+          res.json(donations);
         } catch (error) {
-            res.status(500).json({ error: 'Error approving donation' });
+          res.status(500).json({ error: 'Failed to fetch approved donations' });
         }
-    }
-
-    async rejectDonation(req: Request, res: Response) {
-        const donationId = req.params.id;
+      }
+    
+      async getPendingDonations(req: Request, res: Response) {
         try {
-            const updatedDonation = await MaterialDonationService.rejectDonation(donationId);
-            if (updatedDonation) {
-                res.json(updatedDonation);
-            } else {
-                res.status(404).json({ error: 'Donation not found' });
-            }
+          const donations = await MaterialDonationService.getPendingDonations();
+          res.json(donations);
         } catch (error) {
-            res.status(500).json({ error: 'Error rejecting donation' });
+          res.status(500).json({ error: 'Failed to fetch pending donations' });
         }
-    }
+      }
+    
+      async updateDonationStatus(req: Request, res: Response) {
+        const { id } = req.params;
+        const { status } = req.body;
+        
+        try {
+          const updatedDonation = await MaterialDonationService.changeDonationStatus(id, status);
+          if (updatedDonation) {
+            res.json(updatedDonation);
+          } else {
+            res.status(404).json({ error: 'Donation not found' });
+          }
+        } catch (error) {
+          res.status(500).json({ error: 'Failed to update donation status' });
+        }
+      }
 }
 
 export default new MaterialDonationController();

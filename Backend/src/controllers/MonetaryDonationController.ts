@@ -78,6 +78,14 @@ class MonetaryDonationController {
             res.status(500).json({ error: "Error in payment verification" });
         }
     }
+    async getAllMonetaryDonations(req: Request, res: Response) {
+        try {
+            const donations = await MonetaryDonationService.getAllMonetaryDonations();
+            res.status(200).json(donations);
+        } catch (error) {
+            res.status(500).json({ error: 'Error fetching monetary donations' });
+        }
+    }
     
 }
 
