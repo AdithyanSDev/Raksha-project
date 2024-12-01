@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { loginSuccess } from "../features/auth/authSlice";
 import { loginUser } from "../services/authService";
-import { FaGoogle, FaFacebook, FaEnvelope, FaLock } from "react-icons/fa";
+import { FaGoogle, FaEnvelope, FaLock } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { loginAdmin } from "../features/auth/adminSlice";
 import ForgotPasswordModal from "./ForgotPasswordModal";
+import { store } from "../redux/store";
 
 interface LoginModalProps {
   closeModal: (modalType?: "login" | "signup") => void;
@@ -19,11 +20,16 @@ const LoginModal: React.FC<LoginModalProps> = ({ closeModal }) => {
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
+  const authState = useSelector((state:any) => state.auth);
+  useEffect(() => {
+      console.log("Redux Auth State:", authState);
+  }, [authState]);
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const token = urlParams.get("token");
     const role = urlParams.get("role");
-
+    console.log("Received token:", token);
+    console.log("Received role:", role);
     if (token && role) {
       if (role === "admin") {
         dispatch(loginAdmin(token));
@@ -34,8 +40,18 @@ const LoginModal: React.FC<LoginModalProps> = ({ closeModal }) => {
         localStorage.setItem("token", token);
         navigate("/");
       }
+      // Clear the token and role from the URL to avoid redundant calls
+      urlParams.delete("token");
+      urlParams.delete("role");
+      window.history.replaceState({}, document.title, window.location.pathname);
     }
-  }, []);
+  }, [dispatch, navigate]);
+  
+  useEffect(() => {
+    console.log("Redux State:", store.getState()); // Log the updated Redux state
+  }, [dispatch]);
+  
+  
 
   const handleGoogleLogin = () => {
     const googleAuthUrl = "http://localhost:5000/api/auth/google";
@@ -108,17 +124,24 @@ const LoginModal: React.FC<LoginModalProps> = ({ closeModal }) => {
           </button>
           <h2 className="text-2xl font-bold mb-6">Login</h2>
 
-          <div className="flex justify-center mb-6">
-            <button className="bg-blue-600 text-white rounded-full p-3 mx-2 shadow-md hover:bg-blue-700 transition">
-              <FaFacebook className="text-xl" />
-            </button>
-            <button
-              className="bg-red-600 text-white rounded-full p-3 mx-2 shadow-md hover:bg-red-700 transition"
-              onClick={handleGoogleLogin}
-            >
-              <FaGoogle className="text-xl" />
-            </button>
-          </div>
+          <div className="flex flex-col items-center mb-6">
+  {/* Google Button */}
+  <button
+    className="flex items-center justify-center gap-2 bg-white text-gray-600 border border-gray-300 rounded-full px-6 py-2 shadow hover:shadow-md hover:bg-gray-100 transition"
+    onClick={handleGoogleLogin}
+  >
+     <FaGoogle className="text-xl" />
+    <span className="font-medium">Sign in with Google</span>
+  </button>
+
+  {/* Divider with OR */}
+  <div className="flex items-center w-full mt-4">
+    <div className="flex-grow h-px bg-gray-300"></div>
+    <span className="mx-2 text-gray-500">OR</span>
+    <div className="flex-grow h-px bg-gray-300"></div>
+  </div>
+</div>
+
 
           <div className="relative w-full mb-4">
             <FaEnvelope className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />

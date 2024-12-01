@@ -55,4 +55,10 @@ export class VolunteerRepository {
         throw new Error('Error in VolunteerRepository: ' + error.message);
     }
   }
+    async getVolunteerById(volunteerId: string): Promise<IVolunteer | null> {
+      return await Volunteer.findById(volunteerId).populate('userId');
+    }
+    async updateVolunteerById  (id: string, updateData: Partial<IVolunteer>): Promise<IVolunteer | null>  {
+      return Volunteer.findByIdAndUpdate(id, updateData, { new: true });
+  };
 }

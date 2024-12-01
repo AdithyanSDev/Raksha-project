@@ -33,10 +33,18 @@ export const fetchApprovedMaterialDonations = async () => {
     return response.data;
   };
   
-  export const updateDonationStatus = async (id: string, status: 'approved' | 'rejected') => {
-    const response = await axios.patch(`${API_URL}/material/${id}/status`, { status });
+  export const updateDonationStatus = async (
+    id: string,
+    status: 'approved' | 'rejected',
+    cancelReason?: string
+  ) => {
+    const response = await axios.patch(`${API_URL}/material/${id}/status`, {
+      status,
+      cancelReason,
+    });
     return response.data;
   };
+  
 
 
 export const createMonetaryDonation = async (data: {

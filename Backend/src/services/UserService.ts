@@ -132,7 +132,7 @@ export class UserService {
         email,
         password: hashedPassword,
         location: { latitude, longitude },
-        role, // Assign role during signup
+        role, 
       } as IUser;
 
       user = await this.userRepository.createUser(newUser);
@@ -145,7 +145,7 @@ export class UserService {
     const token = jwt.sign(
       { id: user._id, email: user.email, role: user.role },
       JWT_SECRET,
-      { expiresIn: "5h" }
+      { expiresIn: "30d" }
     );
     console.log(user.id, "afod0idfde");
 
@@ -220,21 +220,31 @@ export class UserService {
 
   async refreshToken(
     oldRefreshToken: string
-  ): Promise<{ accessToken: string }> {
-    // Verify refresh token
+  ): Promise<{ accessToken: string; refreshToken: string }> {
+    // Verify the old refresh token
     const decoded = jwt.verify(oldRefreshToken, JWT_REFRESH_SECRET) as any;
-
-    // Find the user based on the token data
+  
+    // Find the user associated with the refresh token
     const user = await this.userRepository.getUserById(decoded.id);
     if (!user || user.refreshToken !== oldRefreshToken) {
       throw new Error("Invalid refresh token");
     }
-
-    // Generate new access token
+  
+    // Generate new tokens
     const newAccessToken = this.generateAccessToken(user);
-
-    return { accessToken: newAccessToken };
+    const newRefreshToken = jwt.sign(
+      { id: user._id },
+      JWT_REFRESH_SECRET,
+      { expiresIn: "30d" } 
+    );
+  
+    // Update the refresh token in the database
+    user.refreshToken = newRefreshToken;
+    await user.save();
+  
+    return { accessToken: newAccessToken, refreshToken: newRefreshToken };
   }
+  
 
   async generateForgotPasswordOtp(email: string): Promise<string> {
     const user = await this.userRepository.findUserByEmail(email);

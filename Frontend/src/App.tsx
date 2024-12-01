@@ -29,6 +29,14 @@ import UserManagement from "./adminComponents/UserManagement";
 import { ToastContainer } from "react-toastify";
 import MaterialDonationManagement from "./adminComponents/MaterialDonationManagement";
 import MonetaryDonationManagement from "./adminComponents/MonetaryDonationManagement";
+import VolunteerDetails from "./adminComponents/VolunteerDetails";
+import VolunteerProfile from "./components/VolunteerProfile";
+import NotFound from "./components/NotFound";;
+import AlertPage from "./components/AlertPage";
+import Map from "./components/Map";
+import DisasterBanner from "./components/DisasterBanner";
+import DonationBanner from "./components/DonationBanner";
+
 
 
 const App: React.FC = () => {
@@ -57,10 +65,12 @@ const App: React.FC = () => {
               <>
                 <Header />
                 <Banner />
-                <main className="container mx-auto px-4">
+                <main className="container mx-auto px-4 relative z-10 -mt-20  bg-gradient-to-br from-blue-200 to-green-500 ">
                   <AlertsSection />
                   <ResourceButtons />
                   <VolunteerSection />
+                  <DisasterBanner/>
+                  <DonationBanner/>
                 </main>
                 <Footer />
               </>
@@ -76,16 +86,22 @@ const App: React.FC = () => {
             path="/volunteer-management"
             element={<VolunteerManagement />}
           />
+            <Route path="/volunteer/:id" element={<VolunteerDetails />} />
           <Route path="/volunteer-requests" element={<VolunteerRequests />} />
           <Route path="/resources" element={<ResourcesPage />} />
           <Route path="/create-resource" element={<CreateResource />} />
           <Route path="/profile" element={<ProtectedRoute component={UserProfile} />} />
+          <Route path="/volunteer/profile/:volunteerId" element={<VolunteerProfile />} />
           <Route path="/volunteer-register" element={<VolunteerForm />} />
           <Route path="/donation-page" element={<DonationPage />} />
           <Route path="/donation-management/material" element={<MaterialDonationManagement />} />
             <Route path="/donation-management/monetary" element={<MonetaryDonationManagement />} />
           <Route path="/alert-management" element={<AlertManagement />} />
+          <Route path="/alertpage" element={<AlertPage />} />
           <Route path="/user-management" element={<UserManagement />} />
+           <Route path="*" element={<NotFound />} />
+           <Route path="/map" element={<Map />} />
+          
         </Routes>
       </div>
       

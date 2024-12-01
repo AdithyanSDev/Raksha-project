@@ -11,7 +11,7 @@ const BottomBoxes: React.FC = () => {
                 <h2 className="text-xl font-bold">Recent Requests</h2>
             </div>
             <div className="bg-green-300 p-6 rounded-lg text-center">
-                <h2 className="text-xl font-bold">Recent Registrations</h2>
+                <h2 className="text-xl font-bold">Recent Material donations</h2>
             </div>
         </div>
     );

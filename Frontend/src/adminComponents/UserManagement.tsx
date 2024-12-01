@@ -4,6 +4,8 @@ import Sidebar from "./Sidebar";
 
 const UserManagement: React.FC = () => {
   const [users, setUsers] = useState<IUser[]>([]);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const usersPerPage = 8; // Number of users per page
 
   useEffect(() => {
     const getUsers = async () => {
@@ -34,6 +36,13 @@ const UserManagement: React.FC = () => {
     }
   };
 
+  // Pagination logic
+  const indexOfLastUser = currentPage * usersPerPage;
+  const indexOfFirstUser = indexOfLastUser - usersPerPage;
+  const currentUsers = users.slice(indexOfFirstUser, indexOfLastUser);
+
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+
   return (
     <div className="flex">
       <Sidebar />
@@ -50,17 +59,16 @@ const UserManagement: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {users.map((user) => (
+            {currentUsers.map((user) => (
               <tr key={user._id}>
-                <td className="border p-2 ">
+                <td className="border p-2">
                   <img
                     src={user.profilePicture}
                     alt={`${user.username}'s profile`}
-                    className="w-12 h-12 rounded-full object-cover "
+                    className="w-12 h-12 rounded-full object-cover"
                   />
                 </td>
                 <td className="border p-2">{user.username}</td>
-
                 <td className="border p-2">{user.email}</td>
                 <td className="border p-2">
                   {user.isBlocked ? "Blocked" : "Active"}
@@ -79,6 +87,23 @@ const UserManagement: React.FC = () => {
             ))}
           </tbody>
         </table>
+
+        {/* Pagination */}
+        <div className="flex justify-center mt-4">
+          {[...Array(Math.ceil(users.length / usersPerPage)).keys()].map(
+            (num) => (
+              <button
+                key={num + 1}
+                onClick={() => paginate(num + 1)}
+                className={`px-4 py-2 mx-1 border rounded ${
+                  currentPage === num + 1 ? "bg-blue-500 text-white" : "bg-gray-200"
+                }`}
+              >
+                {num + 1}
+              </button>
+            )
+          )}
+        </div>
       </div>
     </div>
   );

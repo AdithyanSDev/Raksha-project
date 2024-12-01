@@ -59,27 +59,31 @@ export class AlertService {
   public async fetchEONETAlerts(): Promise<void> {
     try {
       const response = await axios.get(EONET_API_URL);
-      const events = response.data.events; // Adapt based on EONET response structure
+      const events = response.data.events; 
 
       for (const event of events) {
-        const alertData: Partial<IAlert> = {
-          title: event.title,
-          description: event.description || "No description available",
-          location: {
-            latitude: event.geometries[0].coordinates[1],
-            longitude: event.geometries[0].coordinates[0],
-          },
-          alertType: event.categories[0].title,
-          severity: event.severity || 'Moderate',
-          source: 'NASA EONET',
-        };
-
-        const existingAlert = await this.alertRepository.findAlertByTitle(event.title);
-        if (!existingAlert) {
-          const newAlert = await this.alertRepository.createAlert(alertData);
-          await this.notifyNearbyUsers(newAlert);
+        if (event.geometries && event.geometries.length > 0 && event.geometries[0].coordinates) {
+          const alertData: Partial<IAlert> = {
+            title: event.title,
+            description: event.description || "No description available",
+            location: {
+              latitude: event.geometries[0].coordinates[1],
+              longitude: event.geometries[0].coordinates[0],
+            },
+            alertType: event.categories[0].title,
+            severity: event.severity || 'Moderate',
+            source: 'NASA EONET',
+          };
+      
+          const existingAlert = await this.alertRepository.findAlertByTitle(event.title);
+          if (!existingAlert) {
+            const newAlert = await this.alertRepository.createAlert(alertData);
+            await this.notifyNearbyUsers(newAlert);
+          }
+        } else {
+          console.warn(`Skipping event with missing geometry or coordinates: ${event.title}`);
         }
-      }
+      }      
     } catch (error) {
       console.error("Error fetching EONET alerts:", error);
     }

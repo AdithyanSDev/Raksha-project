@@ -21,6 +21,8 @@ interface ResourceRequest {
 const ResourceRequests: React.FC = () => {
   const [requests, setRequests] = useState<ResourceRequest[]>([]);
   const [sortBy, setSortBy] = useState<string>(''); // For sorting logic
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const requestsPerPage = 8; // Number of requests per page
 
   useEffect(() => {
     // Fetch resource requests from the backend
@@ -46,6 +48,13 @@ const ResourceRequests: React.FC = () => {
       setRequests(sorted);
     }
   };
+
+  // Pagination logic
+  const indexOfLastRequest = currentPage * requestsPerPage;
+  const indexOfFirstRequest = indexOfLastRequest - requestsPerPage;
+  const currentRequests = requests.slice(indexOfFirstRequest, indexOfLastRequest);
+
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   return (
     <div className="flex">
@@ -77,7 +86,7 @@ const ResourceRequests: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {requests.map((request) => (
+            {currentRequests.map((request) => (
               <tr key={request._id}>
                 <td className="border p-2">{request.resourceType}</td>
                 <td className="border p-2">{request.quantity}</td>
@@ -89,6 +98,19 @@ const ResourceRequests: React.FC = () => {
             ))}
           </tbody>
         </table>
+
+        {/* Pagination */}
+        <div className="flex justify-center mt-4">
+          {[...Array(Math.ceil(requests.length / requestsPerPage)).keys()].map((num) => (
+            <button
+              key={num + 1}
+              onClick={() => paginate(num + 1)}
+              className={`px-4 py-2 mx-1 border rounded ${currentPage === num + 1 ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+            >
+              {num + 1}
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );

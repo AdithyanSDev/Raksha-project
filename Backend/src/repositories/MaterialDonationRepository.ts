@@ -14,8 +14,11 @@ class MaterialDonationRepository {
         return await MaterialDonation.find({ status: 'pending' });
       }
     
-      async updateDonationStatus(id: string, status: 'approved' | 'rejected'): Promise<IMaterialDonation | null> {
-        return await MaterialDonation.findByIdAndUpdate(id, { status }, { new: true });
+      async updateDonationStatus(
+        id: string,
+        updateFields: { status: string; cancelReason?: string }
+      ): Promise<IMaterialDonation | null> {
+        return await MaterialDonation.findByIdAndUpdate(id, updateFields, { new: true });
       }
 }
 

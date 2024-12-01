@@ -15,9 +15,24 @@ class MaterialDonationService {
         return await MaterialDonationRepository.findPendingDonations();
       }
     
-      async changeDonationStatus(id: string, status: 'approved' | 'rejected'): Promise<IMaterialDonation | null> {
-        return await MaterialDonationRepository.updateDonationStatus(id, status);
+      async changeDonationStatus(
+        id: string,
+        status: 'approved' | 'rejected',
+        cancelReason?: string
+      ) {
+        // Build the update fields based on the status
+        const updateFields: { status: string; cancelReason?: string } = { status };
+      
+        // Add cancelReason only if status is 'rejected' and cancelReason is provided
+        if (status === 'rejected' && cancelReason) {
+          updateFields.cancelReason = cancelReason;
+        }
+      
+        // Pass updateFields to the repository function
+        return await MaterialDonationRepository.updateDonationStatus(id, updateFields);
       }
+      
+
 }
 
 export default new MaterialDonationService();

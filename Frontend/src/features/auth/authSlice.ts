@@ -13,6 +13,7 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     loginSuccess: (state, action) => {
+      console.log("loginSuccess Reducer Called");
       state.isAuthenticated = true;
       state.token = action.payload.token;
       state.userId = action.payload.userId; // Store userId
@@ -21,6 +22,12 @@ const authSlice = createSlice({
     tokenRefreshed: (state, action) => {
       state.token = action.payload.token;
     },
+    refreshSuccess: (state, action) => {
+      state.token = action.payload.token;
+      localStorage.setItem('token', action.payload.token);
+      localStorage.setItem('refreshToken', action.payload.refreshToken);
+    },
+    
     logout: (state) => {
       state.isAuthenticated = false;
       state.token = null;

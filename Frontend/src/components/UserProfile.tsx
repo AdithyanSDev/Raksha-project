@@ -7,9 +7,10 @@ import ProfilePictureModal from "./ProfilePictureModal";
 import { logout } from "../features/auth/authSlice";
 import Footer from "./Footer";
 import Header from "./Header";
-import ProfileForm from "./EditProfileForm"; 
+import ProfileForm from "./EditProfileForm";
 import { updateUserProfile, uploadProfilePictureToS3 } from "../services/UserService";
 import ProfileSidebar from "./ProfileSidebar"; // New Sidebar Component
+import { Link } from "react-router-dom";
 
 const ProfilePage = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -94,21 +95,21 @@ const ProfilePage = () => {
 
   const uploadImage = async (file: File) => {
     try {
-        const response = await uploadProfilePictureToS3(file, token || "");
-        if (response && response.data && response.data.user) {
-            const profilePictureUrl = response.data.user.profilePicture;
+      const response = await uploadProfilePictureToS3(file, token || "");
+      if (response && response.data && response.data.user) {
+        const profilePictureUrl = response.data.user.profilePicture;
 
-            setFormData({
-                ...formData,
-                profilePicture: profilePictureUrl,
-            });
+        setFormData({
+          ...formData,
+          profilePicture: profilePictureUrl,
+        });
 
-            await updateUserProfile({ ...formData, profilePicture: profilePictureUrl }, token || "");
-        } else {
-            console.error("Unexpected response structure:", response);
-        }
+        await updateUserProfile({ ...formData, profilePicture: profilePictureUrl }, token || "");
+      } else {
+        console.error("Unexpected response structure:", response);
+      }
     } catch (error) {
-        console.error("Error uploading profile picture:", error);
+      console.error("Error uploading profile picture:", error);
     }
   };
 
@@ -147,8 +148,10 @@ const ProfilePage = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <Header />
+    <div className="flex flex-col min-h-screen bg-gradient-to-r from-blue-100 to-blue-100">
+      <header className="bg-transparent text-green-500 py-4 text-3xl font-bold w-full">
+        <Link to="/" className="hover:underline ml-4">Raksha</Link>
+      </header>
       <div className="flex flex-col lg:flex-row flex-grow">
         {/* Sidebar */}
         <ProfileSidebar
@@ -159,7 +162,7 @@ const ProfilePage = () => {
         />
 
         {/* Main Content */}
-        <main className="flex-grow p-6 bg-white">
+        <main className="flex-grow p-6 bg-gradient-to-r from-blue-100 to-green-200">
           {isEditing ? (
             <ProfileForm
               formData={formData}
@@ -167,18 +170,21 @@ const ProfilePage = () => {
               onChange={handleChange}
               onSubmit={handleSubmit}
               isEditing={isEditing}
+
               setIsEditing={setIsEditing}
             />
           ) : (
-            <div>
-              <h2 className="text-2xl font-semibold mb-4">Personal Information</h2>
-              <p>Username: {formData.username}</p>
-              <p>Email: {formData.email}</p>
-              <p>Gender: {formData.gender}</p>
-              <p>Age: {formData.age}</p>
-              <p>Phone Number: {formData.phoneNumber}</p>
+            <div className="bg-gradient-to-r from-green-100 to-purple-100 p-6 rounded-md shadow-lg transform transition-transform hover:scale-95">
+              <h2 className="text-2xl font-semibold mb-4 text-gray-800">Personal Information</h2>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 text-gray-700">
+                <p><strong>Username:</strong> {formData.username}</p>
+                <p><strong>Email:</strong> {formData.email}</p>
+                <p><strong>Gender:</strong> {formData.gender}</p>
+                <p><strong>Age:</strong> {formData.age}</p>
+                <p><strong>Phone Number:</strong> {formData.phoneNumber}</p>
+              </div>
               <button
-                className="mt-4 p-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                className="mt-6 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
                 onClick={() => setIsEditing(true)}
               >
                 Edit Information
@@ -195,7 +201,7 @@ const ProfilePage = () => {
         onTakePicture={takePicture}
         onSelectFromGallery={selectFromGallery}
       />
-     {isCameraOpen && <CameraComponent onPictureCapture={handlePictureCapture} onClose={closeModal} />}
+      {isCameraOpen && <CameraComponent onPictureCapture={handlePictureCapture} onClose={closeModal} />}
 
       <input
         type="file"
@@ -209,3 +215,4 @@ const ProfilePage = () => {
 };
 
 export default ProfilePage;
+  

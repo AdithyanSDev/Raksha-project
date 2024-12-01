@@ -31,6 +31,7 @@ export class VolunteerService {
     // Fetch volunteer by userId
     return await this.volunteerRepository.getVolunteerByUserId(userId);
   }
+ 
 
   async updateVolunteer(userId: string, updateData: Partial<IVolunteer>): Promise<IVolunteer | null> {
     // Update volunteer info based on userId
@@ -68,4 +69,32 @@ export class VolunteerService {
         throw new Error('Error in VolunteerService: ' + error.message);
     }
   }
+  async addTaskToVolunteer(volunteerId: string, task: string): Promise<IVolunteer | null> {
+    const volunteer = await this.volunteerRepository.getVolunteerById(volunteerId);
+    if (!volunteer) return null;
+  
+    volunteer.tasks.push(task);  // Push task to the tasks array of the specific volunteer
+    return await volunteer.save();
+  }
+  async fetchVolunteerById  (id: string): Promise<IVolunteer> {
+    const volunteer = await this.volunteerRepository.getVolunteerById(id);
+    console.log(volunteer)
+    if (!volunteer) {
+      throw new Error("Volunteer not found");
+    }
+    return volunteer;
+  };
+
+  async getVolunteerByUserId(userId: string): Promise<(IVolunteer & { user?: IUser }) | null> {
+    const volunteer = await this.volunteerRepository.getVolunteerByUserId(userId);
+    if (volunteer) {
+        const user = await this.userRepository.getUserById(userId);
+        return { ...volunteer.toObject(), user };  // Spread volunteer and add user field
+    }
+    return volunteer;
+}
+async updateVolunteerProfile (id: string, updateData: Partial<IVolunteer>): Promise<IVolunteer | null>  {
+  return await this.volunteerRepository.updateVolunteerById(id, updateData);
+};
+  
 }

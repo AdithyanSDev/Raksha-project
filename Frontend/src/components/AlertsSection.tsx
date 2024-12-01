@@ -5,6 +5,7 @@ import "leaflet/dist/leaflet.css";
 import { format } from "date-fns";
 import { FaExpand, FaTimes } from "react-icons/fa";
 import L from "leaflet";
+import ScrollReveal from 'scrollreveal';
 
 interface Alert {
   id: string;
@@ -21,15 +22,18 @@ const AlertsSection: React.FC = () => {
   const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    ScrollReveal().reveal('.alert-card', {
+      delay: 200,
+      duration: 1000,
+      reset: true,
+    });
     const loadAlerts = async () => {
       try {
         const data = await fetchAlerts();
-        console.log("Fetched alerts data:", data); // Debugging line to check alert data
+
         const today = new Date();
-        console.log(today)
         const filteredAlerts = data.filter((alert: Alert) => {
           const alertDate = new Date(alert.createdAt);
-          console.log(alertDate)
           return (
             alertDate.getFullYear() === today.getFullYear() &&
             alertDate.getMonth() === today.getMonth() &&
@@ -37,7 +41,7 @@ const AlertsSection: React.FC = () => {
           );
         });
         setAlerts(filteredAlerts);
-        console.log(filteredAlerts)
+        
       } catch (error) {
         console.error("Error fetching alerts:", error);
       }
@@ -66,27 +70,52 @@ const AlertsSection: React.FC = () => {
 
   return (
     <section className="p-8 bg-white shadow-md my-6 flex relative">
-      <div className="flex-1">
-        {alerts.length > 0 ? (
-          alerts.map((alert) => (
-            <div
-              key={alert.id}
-              className="p-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 mb-4 rounded-md relative"
-            >
-              <h2 className="text-xl font-bold">{alert.title}</h2>
-              <p>{alert.description}</p>
-              <p className="absolute bottom-2 right-2 text-sm text-gray-600">
-                {format(new Date(alert.createdAt), "MM/dd/yyyy, HH:mm")}
-              </p>
-            </div>
-          ))
-        ) : (
-          <div className="p-4 bg-green-100 border-l-4 border-green-500 text-green-700 rounded-md">
-            <h2 className="text-xl font-bold">Everything looks normal</h2>
-            <p>Have a great day!</p>
-          </div>
-        )}
+    <div className="flex-1">
+  {alerts.length > 0 ? (
+    alerts.map((alert) => (
+      <div
+        key={alert.id}
+        className="p-6 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 mb-6 rounded-lg relative shadow-lg transform transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-2xl"
+        style={{ perspective: "1000px" }}
+        onMouseMove={(e) => {
+          const rect = e.currentTarget.getBoundingClientRect();
+          const x = e.clientX - rect.left; // X coordinate relative to the element
+          const y = e.clientY - rect.top;  // Y coordinate relative to the element
+          e.currentTarget.style.transform = `scale(1.05) rotateX(${(y - rect.height / 2) / 15}deg) rotateY(${-(x - rect.width / 2) / 15}deg)`;
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.transform = "scale(1)"; // Reset on mouse leave
+        }}
+      >
+        <h2 className="text-2xl font-bold text-yellow-800 mb-2">{alert.title}</h2>
+        <p className="text-yellow-900 text-lg mb-4">{alert.description}</p>
+        <p className="absolute bottom-2 right-2 text-sm text-gray-600">
+          {format(new Date(alert.createdAt), "MM/dd/yyyy, HH:mm")}
+        </p>
       </div>
+    ))
+  ) : (
+    <div
+      className="p-6 bg-green-100 border-l-4 border-green-500 text-green-700 rounded-lg shadow-lg transform transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-2xl"
+      style={{ perspective: "1000px" }}
+      onMouseMove={(e) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        e.currentTarget.style.transform = `scale(1.05) rotateX(${(y - rect.height / 2) / 15}deg) rotateY(${-(x - rect.width / 2) / 15}deg)`;
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = "scale(1)";
+      }}
+    >
+      <h2 className="text-2xl font-bold text-green-800 mb-2">
+        Everything looks normal
+      </h2>
+      <p className="text-green-900 text-lg">Have a great day!</p>
+    </div>
+  )}
+</div>
+
 
       {/* Small Map Section */}
       {!isExpanded && (

@@ -89,18 +89,21 @@ export class UserController {
   // Route to refresh access token
   refreshToken = async (req: Request, res: Response): Promise<Response> => {
     const { refreshToken } = req.body;
-
+  
     if (!refreshToken) {
       return res.status(400).json({ message: "Refresh token is required" });
     }
-
+  
     try {
-      const { accessToken } = await this.userService.refreshToken(refreshToken);
-      return res.status(200).json({ accessToken });
+      const { accessToken, refreshToken: newRefreshToken } =
+        await this.userService.refreshToken(refreshToken);
+  
+      return res.status(200).json({ accessToken, refreshToken: newRefreshToken });
     } catch (error: any) {
       return res.status(401).json({ message: "Invalid refresh token" });
     }
   };
+  
 
   // Fetch User Profile Controller Method
   getUserProfile = async (req: Request, res: Response): Promise<Response> => {

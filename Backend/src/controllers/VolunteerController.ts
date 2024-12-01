@@ -56,7 +56,16 @@ export class VolunteerController {
             res.status(500).json({ error: "Error fetching volunteer data", detail: error.message });
         }
     }
-
+   async getVolunteerById (req: Request, res: Response){
+        try {
+          const volunteerId = req.params.id;
+          console.log(volunteerId)
+          const volunteer = await volunteerService.fetchVolunteerById(volunteerId);
+          res.status(200).json(volunteer);
+        } catch (error:any) {
+          res.status(404).json({ message: error.message || "Volunteer not found" });
+        }
+      };
     async updateVolunteer(req: Request, res: Response) {
         try {
             const updatedVolunteer = await volunteerService.updateVolunteer(
@@ -138,4 +147,41 @@ export class VolunteerController {
         }
     }
     
+
+async assignTask(req: Request, res: Response) {
+    try {
+      const { volunteerId } = req.params;
+      const { task } = req.body;
+  
+      const updatedVolunteer = await volunteerService.addTaskToVolunteer(volunteerId, task);
+      if (!updatedVolunteer) {
+        return res.status(404).json({ message: "Volunteer not found" });
+      }
+      res.status(200).json(updatedVolunteer);
+    } catch (error) {
+      res.status(500).json({ error: "Error assigning task" });
+    }
+  }
+  async getVolunteerByUserId(req: Request, res: Response) {
+    const { userId } = req.params;
+    try {
+        const volunteerData = await volunteerService.getVolunteerByUserId(userId);
+        if (!volunteerData) {
+            return res.status(404).json({ message: "Volunteer not found" });
+        }
+        res.status(200).json(volunteerData);
+    } catch (error: any) {
+        res.status(500).json({ error: "Error fetching volunteer data", detail: error.message });
+    }
+}   
+
+async  updateVolunteerProfile (req: Request, res: Response) {
+    try {
+        const updatedVolunteer = await volunteerService.updateVolunteerProfile(req.params.id, req.body);
+        if (!updatedVolunteer) return res.status(404).json({ message: 'Volunteer not found' });
+        res.json(updatedVolunteer);
+    } catch (error) {
+        res.status(500).json({ message: 'Failed to update volunteer profile' });
+    }
+}
 }

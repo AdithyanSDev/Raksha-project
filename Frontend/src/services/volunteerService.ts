@@ -3,6 +3,15 @@ import axios from 'axios';
 
 const BASE_URL = 'http://localhost:5000'
 
+interface User {
+    phoneNumber?: string;
+    location: {
+      latitude: number;
+      longitude: number;
+    };
+    // Add other properties of User here
+  }
+
 export interface VolunteerData {
    
     _id: string;
@@ -10,6 +19,7 @@ export interface VolunteerData {
     profilePicture: string | undefined;
     name: string;
     email: string;
+    phone:string
     userId: string;
     role: string;
     skills: string[];
@@ -19,6 +29,8 @@ export interface VolunteerData {
         latitude: number;
         longitude: number;
     };
+    tasks:string[]
+    user: User;
 }
 
 
@@ -105,3 +117,39 @@ export const checkVolunteerStatus = async (userId: string): Promise<boolean> => 
         throw new Error('Failed to check volunteer status');
     }
 };
+
+export async function assignTaskToVolunteer(volunteerId: string, task: string): Promise<void> {
+    console.log(volunteerId);
+    await axios.put(`/api/volunteers/${volunteerId}/assign-task`, { task });
+  }
+
+  export const fetchVolunteerById = async (id: string): Promise<VolunteerData> => {
+    const response = await axios.get(`/api/volunteers/${id}`);
+    return response.data;
+  };
+  
+  export const fetchVolunteerDataByUserId = async (userId: string): Promise<VolunteerData> => {
+    try {
+        const { data } = await axios.get(`/api/volunteer/${userId}`, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+        });
+        return data;
+    } catch (error) {
+        throw new Error('Failed to fetch volunteer data');
+    }
+};
+
+export const updateVolunteerProfile = async (volunteerId: string, updatedData: Partial<VolunteerData>): Promise<VolunteerData> => {
+    try {
+        const { data } = await axios.put(`/api/volunteers/${volunteerId}`, updatedData, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+        });
+        return data;
+    } catch (error) {
+        throw new Error("Failed to update volunteer profile");
+    }
+}; 

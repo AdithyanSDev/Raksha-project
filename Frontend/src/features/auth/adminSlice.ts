@@ -16,6 +16,7 @@ const adminSlice = createSlice({
     initialState,
     reducers: {
         loginAdmin: (state, action: PayloadAction<string>) => { // Expecting a string payload
+            console.log("loginAdmin Reducer Called");
             state.isAdminLoggedIn = true;
             state.adminToken = action.payload; // Set admin token
         },

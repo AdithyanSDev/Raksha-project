@@ -51,10 +51,14 @@ class MaterialDonationController {
     
       async updateDonationStatus(req: Request, res: Response) {
         const { id } = req.params;
-        const { status } = req.body;
-        
+        const { status, cancelReason } = req.body;
+      
         try {
-          const updatedDonation = await MaterialDonationService.changeDonationStatus(id, status);
+          const updatedDonation = await MaterialDonationService.changeDonationStatus(
+            id,
+            status,
+            cancelReason
+          );
           if (updatedDonation) {
             res.json(updatedDonation);
           } else {
@@ -64,6 +68,7 @@ class MaterialDonationController {
           res.status(500).json({ error: 'Failed to update donation status' });
         }
       }
+      
 }
 
 export default new MaterialDonationController();
