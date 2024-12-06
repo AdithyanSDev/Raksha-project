@@ -3,12 +3,13 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "concurrently \"npm run backend\" \"npm run frontend\"",
-    "frontend": "npm start --prefix Frontend",
-    "backend": "npm run dev --prefix Backend"
-  },
+  "dev": "npm-run-all --parallel Backend Frontend",
+  "Backend": "npm run dev --prefix Backend",
+  "Frontend": "npm start --prefix Frontend"
+},
   "devDependencies": {
-    "concurrently": "^6.0.0"
+    "concurrently": "^6.0.0",
+    "npm-run-all": "^4.1.5"
   },
   "dependencies": {
     "jwt-decode": "^4.0.0",
