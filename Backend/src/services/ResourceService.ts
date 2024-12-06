@@ -1,7 +1,8 @@
 import ResourceRepository from '../repositories/ResourceRepository';
+import { ResourceDTO } from '../dtos/ResourceDTO';
 
 class ResourceService {
-  async createResource(resourceData: any) {
+  async createResource(resourceData: ResourceDTO) {
     return await ResourceRepository.createResource(resourceData);
   }
 
@@ -9,7 +10,7 @@ class ResourceService {
     return await ResourceRepository.getAllResources();
   }
 
-  async updateResource(id: string, resourceData: any) {
+  async updateResource(id: string, resourceData: Partial<ResourceDTO>) {
     return await ResourceRepository.updateResource(id, resourceData);
   }
 

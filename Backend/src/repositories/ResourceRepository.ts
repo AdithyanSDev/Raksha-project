@@ -1,7 +1,8 @@
-import { Resource } from '../models/Resource';
+import { Resource, IResource } from '../models/Resource';
+import { BaseRepository } from './BaseRepository';
 
-class ResourceRepository {
-  async createResource(resourceData: any) {
+class ResourceRepository extends BaseRepository<IResource> {
+  async createResource(resourceData:Partial<IResource>) {
     const resource = new Resource(resourceData);
     return await resource.save();
   }
@@ -10,7 +11,7 @@ class ResourceRepository {
     return await Resource.find();
   }
 
-  async updateResource(id: string, resourceData: any) {
+  async updateResource(id: string, resourceData: Partial<IResource>) {
     return await Resource.findByIdAndUpdate(id, resourceData, { new: true });
   }
 
@@ -19,4 +20,4 @@ class ResourceRepository {
   }
 }
 
-export default new ResourceRepository();
+export default new  ResourceRepository(Resource);

@@ -1,21 +1,21 @@
 // src/repositories/ResourceRequestRepository.ts
+import { IResourceRequest, ResourceRequest } from '../models/ResourceRequests';
+import { BaseRepository } from './BaseRepository';
 
-import { ResourceRequest } from '../models/ResourceRequests';
-import { IResourceRequest } from '../models/ResourceRequests';
-
-export class ResourceRequestRepository {
-  // Method to create a new resource request
-  async createResourceRequest(resourceRequestData: IResourceRequest): Promise<IResourceRequest> {
-    const resourceRequest = new ResourceRequest(resourceRequestData);
-    return await resourceRequest.save(); // Save the request to the database
+export class ResourceRequestRepository extends BaseRepository<IResourceRequest> {
+  constructor() {
+    super(ResourceRequest);
   }
-
-  public async findAll(): Promise<IResourceRequest[]> {
-    try {
-      return await ResourceRequest.find();
-    } catch (error) {
-      throw new Error('Error fetching resource requests');
+  async updateStatusById(id: string, status: string, rejectionReason?: string) {
+    const updateData: any = { status };
+    if (status === 'rejected' && rejectionReason) {
+      updateData.rejectionReason = rejectionReason;
     }
+    return await ResourceRequest.findByIdAndUpdate(id, updateData, { new: true });
   }
- 
+  
+  async findByStatus(status: string) {
+    return await ResourceRequest.find({ status });
+  }
+  
 }

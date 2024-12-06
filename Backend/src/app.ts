@@ -85,7 +85,7 @@ import googleAuthRoutes from "./routes/auth";
 import "./googleAuth/passport";
 import DonationRoutes from "./routes/DonationRoutes";
 import alertRoutes from "./routes/alertRoutes";
-import socketRoutes from "./routes/socketRoutes";
+
 import { AlertService } from "./services/AlertService";
 
 // Alert fetching every hour
@@ -103,6 +103,6 @@ app.use("/api", VolunteerRoutes);
 app.use("/api/", DonationRoutes);
 app.use("/api", alertRoutes);
 app.use("/api", chatbotRoutes);
-app.use("/api", socketRoutes);
+
 
 export default app;

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { signupUser } from '../services/authService';
 import OtpModal from './Otp'; // Import the OTP modal
-import { FaGoogle, FaEnvelope, FaLock } from 'react-icons/fa';
+import { FaGoogle, FaEnvelope, FaLock,FaUser } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 
 interface SignupModalProps {
@@ -85,23 +85,23 @@ const SignupModal: React.FC<SignupModalProps> = ({ closeModal }) => {
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-white rounded-lg shadow-lg flex w-full max-w-3xl overflow-hidden">
             {/* Left Side */}
-            <div className="w-1/2 p-8 bg-gradient-to-br from-purple-600 to-purple-400 text-white flex flex-col items-center justify-center">
+            <div className="w-1/2 p-8 bg-gradient-to-br from-blue-400 to-green-200 text-white flex flex-col items-center justify-center">
               <h2 className="text-4xl font-bold mb-2">Come join us!</h2>
               <p className="mt-2 text-center">Sign up to create your account</p>
-              <button onClick={() => closeModal('login')} className="mt-5 bg-purple-400 text-white p-3 rounded-lg shadow-lg hover:bg-purple-700 transition font-semibold">
+              <button onClick={() => closeModal('login')} className="mt-5 bg-blue-500 text-white p-3 rounded-lg shadow-lg hover:bg-blue-700 transition font-semibold">
                 Already have an account? Sign In
               </button>
             </div>
 
             {/* Right Side */}
-            <div className="w-full md:w-1/2 p-8 relative">
+            <div className="w-full md:w-1/2 p-8 relative ">
               <button onClick={() => closeModal('signup')} className="text-gray-500 absolute top-4 right-4 text-xl">&times;</button>
               <h2 className="text-2xl font-bold mb-4">Sign Up</h2>
 
               {/* Social Media Buttons */}
               <div className="flex flex-col items-center mb-6">
                 <button
-                  className="flex items-center justify-center gap-2 bg-white text-gray-600 border border-gray-300 rounded-full px-6 py-2 shadow hover:shadow-md hover:bg-gray-100 transition"
+                  className="flex items-center justify-center gap-2 bg-blue-100 text-gray-600 border border-gray-300 rounded-full px-6 py-2 shadow hover:shadow-md hover:bg-gray-100 transition"
                   onClick={handleGoogleLogin}
                 >
                   <FaGoogle className="text-xl" />
@@ -117,6 +117,7 @@ const SignupModal: React.FC<SignupModalProps> = ({ closeModal }) => {
 
               {/* Input Fields */}
               <div className="relative mb-4">
+              <FaUser className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" /> 
                 <input
                   className="border w-full p-2 rounded pl-10"
                   type="text"
@@ -163,7 +164,7 @@ const SignupModal: React.FC<SignupModalProps> = ({ closeModal }) => {
               <button
                 onClick={handleSignup}
                 disabled={isSubmitting}
-                className={`w-full p-3 rounded-lg shadow-lg font-semibold ${isSubmitting ? 'bg-gray-400 cursor-not-allowed' : 'bg-purple-600 text-white hover:bg-purple-700 transition'}`}
+                className={`w-full p-3 rounded-lg shadow-lg font-semibold ${isSubmitting ? 'bg-gray-400 cursor-not-allowed' : 'bg-green-500 text-white hover:bg-green-700 transition'}`}
               >
                 {isSubmitting ? 'Processing...' : 'Sign Up'}
               </button>

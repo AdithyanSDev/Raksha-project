@@ -2,40 +2,28 @@ import React, { useState, useEffect, useRef } from 'react';
 import { FiSearch, FiBell, FiUser, FiMenu, FiX } from 'react-icons/fi';
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from 'react-router-dom';
-import { RootState } from '../redux/store'; 
+import { RootState } from '../redux/store';
 import LoginModal from './Login';
 import SignupModal from './Signup';
 import { logout } from '../features/auth/authSlice';
 
 const Header: React.FC = () => {
-    const [showDropdown, setShowDropdown] = useState(false);
     const [showMobileMenu, setShowMobileMenu] = useState(false);
+    const [showUserDropdown, setShowUserDropdown] = useState(false);
     const [showModal, setShowModal] = useState<'login' | 'signup' | null>(null);
-    const [isScrolled, setIsScrolled] = useState(false); 
+    const [isScrolled, setIsScrolled] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const authState = useSelector((state: RootState) => state.auth);
 
-    const handleProfileClick = () => {
-        setShowDropdown(prevState => !prevState);
-    };
-
     const handleLogout = () => {
         dispatch(logout());
-        setShowDropdown(false);
-    };
-
-    const handleClickOutside = (event: MouseEvent) => {
-        if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-            setShowDropdown(false);
-        }
     };
 
     const navigateToProfile = () => {
         navigate('/profile');
-        setShowDropdown(false);
     };
 
     const navigateToDonation = () => {
@@ -52,10 +40,23 @@ const Header: React.FC = () => {
         };
 
         window.addEventListener('scroll', handleScroll);
-        document.addEventListener('mousedown', handleClickOutside);
-
         return () => {
             window.removeEventListener('scroll', handleScroll);
+        };
+    }, []);
+
+    // Close the dropdown if clicked outside
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (
+                dropdownRef.current &&
+                !dropdownRef.current.contains(event.target as Node)
+            ) {
+                setShowUserDropdown(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, []);
@@ -66,11 +67,47 @@ const Header: React.FC = () => {
                 isScrolled ? 'bg-white shadow-md' : 'bg-transparent'
             }`}
         >
-            <div className={`font-bold text-2xl ${isScrolled ? 'text-gray-900' : 'text-white'} cursor-pointer`} onClick={()=>{navigate('/')}}>
+            <div
+                className={`font-bold text-2xl ${isScrolled ? 'text-gray-900' : 'text-white'} cursor-pointer`}
+                onClick={() => { navigate('/') }}
+            >
                 Raksha
             </div>
-            {/* Hamburger Menu for Small Devices */}
-            <div className="md:hidden">
+            {/* Hamburger Menu */}
+            <div className="md:hidden flex items-center space-x-4">
+                <div className="relative" ref={dropdownRef}>
+                    <FiUser
+                        className={`text-3xl cursor-pointer ${isScrolled ? 'text-gray-900' : 'text-white'}`}
+                        onClick={() => setShowUserDropdown(prev => !prev)}
+                    />
+                    {showUserDropdown && (
+                        <div className="absolute right-0 mt-2 w-48 bg-white shadow-md rounded-lg py-2 z-50">
+                            {!authState.isAuthenticated ? (
+                                <button
+                                    onClick={() => setShowModal('login')}
+                                    className="block w-full px-4 py-2 text-gray-800 hover:bg-gray-100 text-left"
+                                >
+                                    Login
+                                </button>
+                            ) : (
+                                <>
+                                    <button
+                                        onClick={navigateToProfile}
+                                        className="block w-full px-4 py-2 text-gray-800 hover:bg-gray-100 text-left"
+                                    >
+                                        Profile
+                                    </button>
+                                    <button
+                                        onClick={handleLogout}
+                                        className="block w-full px-4 py-2 text-gray-800 hover:bg-gray-100 text-left"
+                                    >
+                                        Logout
+                                    </button>
+                                </>
+                            )}
+                        </div>
+                    )}
+                </div>
                 {showMobileMenu ? (
                     <FiX
                         className={`text-3xl ${isScrolled ? 'text-gray-900' : 'text-white'} cursor-pointer`}
@@ -82,6 +119,28 @@ const Header: React.FC = () => {
                         onClick={() => setShowMobileMenu(true)}
                     />
                 )}
+                {/* Slide-in Sidebar */}
+                {showMobileMenu && (
+                    <div className="fixed top-0 left-0 w-3/4  bg-white shadow-lg z-30 flex flex-col space-y-6 py-8 px-6">
+                        <button
+                            className="self-end text-2xl mb-4"
+                            onClick={() => setShowMobileMenu(false)}
+                        >
+                            <FiX />
+                        </button>
+                        <a href="/" className="hover:underline text-lg">Home</a>
+                        <a href="/alertpage" className="hover:underline text-lg">Alerts</a>
+                        <a href="/resources" className="hover:underline text-lg">Resources</a>
+                        <a href="/map" className="hover:underline text-lg">Map</a>
+                        <button onClick={navigateToChat} className="hover:underline text-lg">Contact Us</button>
+                        <button
+                            className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700"
+                            onClick={navigateToDonation}
+                        >
+                            Donate Now
+                        </button>
+                    </div>
+                )}
             </div>
             {/* Desktop Navigation */}
             <nav className={`hidden md:flex space-x-6 ${isScrolled ? 'text-gray-900' : 'text-white'}`}>
@@ -89,41 +148,50 @@ const Header: React.FC = () => {
                 <a href="/alertpage" className="hover:underline">Alerts</a>
                 <a href="/resources" className="hover:underline">Resources</a>
                 <a href="/map" className="hover:underline">Map</a>
-                <a onClick={navigateToChat} className="hover:underline cursor-pointer">Contact Us</a>
+                <button onClick={navigateToChat} className="hover:underline">Contact Us</button>
             </nav>
-            {/* Mobile Navigation */}
-            {showMobileMenu && (
-                <nav className="absolute top-16 left-0 w-full bg-white shadow-lg z-30 flex flex-col space-y-4 py-4 px-6 md:hidden">
-                    <a href="/" className="hover:underline">Home</a>
-                    <a href="/alerts" className="hover:underline">Alerts</a>
-                    <a href="/resources" className="hover:underline">Resources</a>
-                    <a href="/map" className="hover:underline">Map</a>
-                    <a onClick={navigateToChat} className="hover:underline cursor-pointer">Contact Us</a>
-                </nav>
-            )}
-            <div className="hidden md:flex items-center bg-white rounded-full px-4 py-1">
-                <input type="text" className="outline-none w-full" placeholder="Search..." />
-                <FiSearch className="text-green-800 ml-2" />
-            </div>
             <div className={`hidden md:flex items-center space-x-6 ${isScrolled ? 'text-gray-900' : 'text-white'}`}>
                 <FiBell className="text-2xl cursor-pointer" />
                 <div className="relative" ref={dropdownRef}>
-                    <FiUser className="text-2xl cursor-pointer" onClick={handleProfileClick} />
-                    {showDropdown && (
+                    <FiUser
+                        className="text-2xl cursor-pointer"
+                        onClick={() => setShowUserDropdown(prev => !prev)}
+                    />
+                    {showUserDropdown && (
                         <div className="absolute right-0 mt-2 w-48 bg-white shadow-md rounded-lg py-2 z-50">
                             {!authState.isAuthenticated ? (
-                                <button onClick={() => setShowModal('login')} className="block w-full px-4 py-2 text-gray-800 hover:bg-gray-100 text-left">Login</button>
+                                <button
+                                    onClick={() => setShowModal('login')}
+                                    className="block w-full px-4 py-2 text-gray-800 hover:bg-gray-100 text-left"
+                                >
+                                    Login
+                                </button>
                             ) : (
                                 <>
-                                    <button onClick={navigateToProfile} className="block w-full px-4 py-2 text-gray-800 hover:bg-gray-100 text-left">Profile</button>
-                                    <button onClick={handleLogout} className="block w-full px-4 py-2 text-gray-800 hover:bg-gray-100 text-left">Logout</button>
+                                    <button
+                                        onClick={navigateToProfile}
+                                        className="block w-full px-4 py-2 text-gray-800 hover:bg-gray-100 text-left"
+                                    >
+                                        Profile
+                                    </button>
+                                    <button
+                                        onClick={handleLogout}
+                                        className="block w-full px-4 py-2 text-gray-800 hover:bg-gray-100 text-left"
+                                    >
+                                        Logout
+                                    </button>
                                 </>
                             )}
                         </div>
                     )}
                 </div>
+                <button
+                    className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700"
+                    onClick={navigateToDonation}
+                >
+                    Donate Now
+                </button>
             </div>
-            <button className="hidden md:block bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700" onClick={navigateToDonation}>Donate Now</button>
             {showModal === 'login' && <LoginModal closeModal={setShowModal} />}
             {showModal === 'signup' && <SignupModal closeModal={() => setShowModal(null)} />}
         </header>

@@ -69,7 +69,7 @@ const AlertsSection: React.FC = () => {
   }, [isExpanded]);
 
   return (
-    <section className="p-8 bg-white shadow-md my-6 flex relative">
+    <section className="p-8 bg-gradient-to-br from-green-600 to-blue-500 shadow-md my-6 flex relative">
     <div className="flex-1">
   {alerts.length > 0 ? (
     alerts.map((alert) => (

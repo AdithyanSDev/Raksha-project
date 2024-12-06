@@ -92,12 +92,12 @@ const App: React.FC = () => {
           <Route path="/create-resource" element={<CreateResource />} />
           <Route path="/profile" element={<ProtectedRoute component={UserProfile} />} />
           <Route path="/volunteer/profile/:volunteerId" element={<VolunteerProfile />} />
-          <Route path="/volunteer-register" element={<VolunteerForm />} />
-          <Route path="/donation-page" element={<DonationPage />} />
+          <Route path="/volunteer-register" element={<ProtectedRoute component={VolunteerForm} />} />
+          <Route path="/donation-page" element={<ProtectedRoute component={DonationPage} />} />
           <Route path="/donation-management/material" element={<MaterialDonationManagement />} />
             <Route path="/donation-management/monetary" element={<MonetaryDonationManagement />} />
           <Route path="/alert-management" element={<AlertManagement />} />
-          <Route path="/alertpage" element={<AlertPage />} />
+          <Route path="/alertpage"element={<ProtectedRoute component={AlertPage} />} />
           <Route path="/user-management" element={<UserManagement />} />
            <Route path="*" element={<NotFound />} />
            <Route path="/map" element={<Map />} />

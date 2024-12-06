@@ -48,8 +48,7 @@ export class VolunteerService {
     await this.volunteerRepository.deleteVolunteer(userId);
   }
 
-  // New methods added below
-
+ 
   // Get volunteers by status
   async getVolunteersByStatus(status: 'Requested' | 'Approved' | 'Rejected'): Promise<IVolunteer[]> {
     return await this.volunteerRepository.getVolunteersByStatus(status);

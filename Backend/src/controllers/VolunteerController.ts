@@ -130,22 +130,30 @@ export class VolunteerController {
     
             // Get the user details
             const user = await userService.getUserById(userId);
-            if (!user || !user.volunteerId) {
-                return res.status(404).json({ message: "User or volunteer not found" });
+    
+            // Handle cases where user doesn't exist or volunteerId is null
+            if (!user) {
+                return res.status(404).json({ message: "User not found" });
+            }
+    
+            if (!user.volunteerId) {
+                // If volunteerId is null, return isVolunteer as false
+                return res.json({ isVolunteer: false });
             }
     
             // Convert the ObjectId to a string
             const volunteerId = user.volunteerId.toString();
-            console.log(volunteerId)
-            // Now, check if the volunteer's status is 'Approved'
+    
+            // Check if the volunteer's status is 'Approved'
             const isVolunteer = await volunteerService.checkIfUserIsApprovedVolunteer(volunteerId);
-            console.log(isVolunteer)
+    
             return res.json({ isVolunteer });
         } catch (error) {
             console.error('Error in VolunteerController:', error);
             return res.status(500).json({ error: 'Failed to check volunteer status' });
         }
     }
+    
     
 
 async assignTask(req: Request, res: Response) {

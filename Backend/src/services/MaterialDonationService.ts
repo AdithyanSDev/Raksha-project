@@ -1,38 +1,35 @@
-import { IMaterialDonation } from '../models/MaterialDonation';
+import mongoose from 'mongoose';
 import MaterialDonationRepository from '../repositories/MaterialDonationRepository';
+import { CreateMaterialDonationDTO, UpdateMaterialDonationStatusDTO } from '../dtos/MaterialDonationDTO';
+import { IMaterialDonation } from '../models/MaterialDonation';
 
 class MaterialDonationService {
-    async createMaterialDonation(donorName: string, item: string, quantity: number, images: string[], userId: string) {
-        return await MaterialDonationRepository.create(donorName, item, quantity, userId, images);
-    }
-    
+  async createMaterialDonation(data: CreateMaterialDonationDTO): Promise<IMaterialDonation> {
+    const { donorName, item, quantity, userId, images } = data;
 
-    async getApprovedDonations(): Promise<IMaterialDonation[]> {
-        return await MaterialDonationRepository.findApprovedDonations();
-      }
-    
-      async getPendingDonations(): Promise<IMaterialDonation[]> {
-        return await MaterialDonationRepository.findPendingDonations();
-      }
-    
-      async changeDonationStatus(
-        id: string,
-        status: 'approved' | 'rejected',
-        cancelReason?: string
-      ) {
-        // Build the update fields based on the status
-        const updateFields: { status: string; cancelReason?: string } = { status };
-      
-        // Add cancelReason only if status is 'rejected' and cancelReason is provided
-        if (status === 'rejected' && cancelReason) {
-          updateFields.cancelReason = cancelReason;
-        }
-      
-        // Pass updateFields to the repository function
-        return await MaterialDonationRepository.updateDonationStatus(id, updateFields);
-      }
-      
+    // Convert userId from string to ObjectId
+    const objectIdUserId = new mongoose.Types.ObjectId(userId);
 
+    return await MaterialDonationRepository.create({
+      donorName,
+      item,
+      quantity,
+      userId: objectIdUserId,
+      images,
+    });
+  }
+
+  async getApprovedDonations(): Promise<IMaterialDonation[]> {
+    return await MaterialDonationRepository.findApprovedDonations();
+  }
+
+  async getPendingDonations(): Promise<IMaterialDonation[]> {
+    return await MaterialDonationRepository.findPendingDonations();
+  }
+
+  async changeDonationStatus(id: string, updateData: UpdateMaterialDonationStatusDTO): Promise<IMaterialDonation | null> {
+    return await MaterialDonationRepository.updateById(id, updateData);
+  }
 }
 
 export default new MaterialDonationService();

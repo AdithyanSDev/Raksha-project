@@ -1,28 +1,19 @@
 import { Request, Response } from 'express';
 import ResourceService from '../services/ResourceService';
+import { handleError } from '../utils/ErrorHandler';
 
 export class ResourceController {
   async createResource(req: Request, res: Response) {
-    const { name, type, quantity, location, description, available } = req.body;
-    
-    // Use 'any' to access the location property from req.file
-    const imageUrl = req.file ? (req.file as any).location : ''; // Cast to 'any' to access location
-
     try {
-      const resourceData = {
-        name,
-        type,
-        quantity,
-        location,
-        description,
-        available,
-        image: imageUrl, // Save the image URL in the resource data
-      };
-
+      const { name, type, quantity, location, description, available } = req.body;
+      const imageUrl = req.file ? (req.file as any).location : ''; // Handle file upload
+      
+      const resourceData = { name, type, quantity, location, description, available, image: imageUrl };
       const resource = await ResourceService.createResource(resourceData);
+
       res.status(201).json(resource);
-    } catch (error: any) {
-      res.status(500).json({ message: 'Error creating resource', error });
+    } catch (error) {
+      handleError(res, 'Error creating resource', error);
     }
   }
 
@@ -31,18 +22,16 @@ export class ResourceController {
       const resources = await ResourceService.getAllResources();
       res.status(200).json(resources);
     } catch (error) {
-      res.status(500).json({ message: 'Error fetching resources', error });
+      handleError(res, 'Error fetching resources', error);
     }
   }
 
   async updateResource(req: Request, res: Response) {
     try {
-      const resourceData = req.body;
-      console.log(resourceData,"resource datta")
-      const updatedResource = await ResourceService.updateResource(req.params.id, resourceData);
+      const updatedResource = await ResourceService.updateResource(req.params.id, req.body);
       res.status(200).json(updatedResource);
     } catch (error) {
-      res.status(500).json({ message: 'Error updating resource', error });
+      handleError(res, 'Error updating resource', error);
     }
   }
 
@@ -51,7 +40,7 @@ export class ResourceController {
       await ResourceService.deleteResource(req.params.id);
       res.status(204).send();
     } catch (error) {
-      res.status(500).json({ message: 'Error deleting resource', error });
+      handleError(res, 'Error deleting resource', error);
     }
   }
 }

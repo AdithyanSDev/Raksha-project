@@ -75,5 +75,6 @@ export const fetchMonetaryDonations = async () => {
             Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
     });
+    console.log(response,"haii")
     return response.data;
 };

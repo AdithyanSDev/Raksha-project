@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css"; // Import the Toastify CSS
+import "react-toastify/dist/ReactToastify.css"; 
 import { RootState } from "../redux/store";
 import { sendResourceRequest } from "../services/resourceService";
 import { CSSTransition } from "react-transition-group";
 import LocationAutocomplete from "./LocationAutocomplete";
+import { selectAuthUserId, selectAuthToken } from "../features/auth/authSlice";
 
 interface ResourceRequestModalProps {
   isOpen: boolean;
@@ -46,9 +47,10 @@ const ResourceRequestModal: React.FC<ResourceRequestModalProps> = ({
     documents: undefined,
   });
 
-  const userId = useSelector((state: RootState) => state.auth.userId);
-  const token = useSelector((state: RootState) => state.auth.token);
-
+  const userId = useSelector(selectAuthUserId);
+  console.log(userId)
+  const token = useSelector(selectAuthToken);
+  console.log(token)
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
@@ -78,7 +80,7 @@ const ResourceRequestModal: React.FC<ResourceRequestModalProps> = ({
     const phoneRegex = /^(?!0{10})\d{10}$/;
 
     if (!phoneRegex.test(formData.contactInfo)) {
-      alert("Please enter a valid 10-digit phone number without spaces.");
+      toast.error("Please enter a valid 10-digit phone number.");
       return;
     }
 
@@ -100,6 +102,7 @@ const ResourceRequestModal: React.FC<ResourceRequestModalProps> = ({
     } catch (error) {
       toast.error("Error submitting the request");
     }
+    console.log(resourceRequestData)
   };
 
   // Modal animations with transition
@@ -107,7 +110,7 @@ const ResourceRequestModal: React.FC<ResourceRequestModalProps> = ({
 
   return (
     <>
-      <ToastContainer /> {/* Add the ToastContainer component */}
+       <ToastContainer position="top-right" autoClose={3000} />
       <CSSTransition in={isOpen} timeout={300} classNames="modal" unmountOnExit>
         <div className="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-80 transition-opacity duration-300 ease-in-out z-[1100]">
           <div className="modal-container relative bg-white p-8 rounded-xl shadow-2xl max-h-[90vh] w-full max-w-4xl overflow-y-auto transform transition-transform duration-300 ease-in-out scale-105">

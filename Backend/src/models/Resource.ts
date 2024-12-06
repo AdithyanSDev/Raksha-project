@@ -8,7 +8,7 @@ export interface IResource extends Document {
   location: string;
   description: string;
   available: boolean;
-  image: string; // Add this field for the image URL
+  image: string; 
 }
 
 const ResourceSchema = new mongoose.Schema({

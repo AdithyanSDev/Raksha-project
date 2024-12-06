@@ -1,5 +1,7 @@
+// src/services/ResourceRequestService.ts
 import { ResourceRequestRepository } from '../repositories/ResourceRequest';
-import { IResourceRequest, ResourceRequest } from '../models/ResourceRequests';
+import { ResourceRequestDTO } from '../dtos/ResourceRequestDTO';
+import mongoose from 'mongoose';
 
 export class ResourceRequestService {
   private resourceRequestRepository: ResourceRequestRepository;
@@ -8,46 +10,29 @@ export class ResourceRequestService {
     this.resourceRequestRepository = new ResourceRequestRepository();
   }
 
-  async createResourceRequest(
-    userId: string, 
-    resourceType: string, 
-    quantity: number, 
-    description: string, 
-    location: string, 
-    address: string, 
-    contactInfo: string,
-    urgencyLevel: string, 
-    disasterType: string,
-    numberOfPeopleAffected: number,
-    additionalInfo?: string,
-    documents?: string[]
-  ): Promise<IResourceRequest> {
-    // Creating a new Mongoose model instance
-    const resourceRequest = new ResourceRequest({
-      userId,
-      resourceType,
-      quantity,
-      description,
-      location,
-      address,
-      contactInfo,
-      urgencyLevel,
-      disasterType,
-      numberOfPeopleAffected,
-      additionalInfo,
-      documents,
-    });
- console.log(resourceRequest,"service")
-    // Save the model instance through the repository
-    return await this.resourceRequestRepository.createResourceRequest(resourceRequest);
+  async createResourceRequest(resourceRequestData: ResourceRequestDTO) {
+    // Convert userId from string to Schema.Types.ObjectId
+    const resourceRequest = {
+      ...resourceRequestData,
+      userId: new mongoose.Types.ObjectId(resourceRequestData.userId) as unknown as mongoose.Schema.Types.ObjectId,
+    };
+
+    return await this.resourceRequestRepository.create(resourceRequest);
   }
 
-   // Get all resource requests
-   public async getAllResourceRequests(): Promise<IResourceRequest[]> {
-    try {
-      return await this.resourceRequestRepository.findAll();
-    } catch (error) {
-      throw new Error('Error getting resource requests');
-    }
+  async getAllResourceRequests() {
+    return await this.resourceRequestRepository.findAll();
   }
+  async approveRequest(id: string) {
+    return await this.resourceRequestRepository.updateStatusById(id, 'approved');
+  }
+  
+  async rejectRequest(id: string, rejectionReason: string) {
+    return await this.resourceRequestRepository.updateStatusById(id, 'rejected', rejectionReason);
+  }
+  
+  async getRequestsByStatus(status: string) {
+    return await this.resourceRequestRepository.findByStatus(status);
+  }
+  
 }

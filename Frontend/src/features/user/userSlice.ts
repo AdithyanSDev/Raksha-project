@@ -25,7 +25,7 @@ export const fetchUserProfile = createAsyncThunk(
   'user/fetchProfile',
   async (_, { getState }) => {
     const state = getState() as RootState;
-    const token = state.auth.token; // Get token from auth slice
+    const token = state.auth.token; 
     if (token) {
       return await getUserProfile();
     }
@@ -48,9 +48,9 @@ export const saveUserProfile = createAsyncThunk(
 );
 // Create an async thunk to fetch user details by ID
 export const fetchUserInfoById = createAsyncThunk('user/fetchUserInfoById', async (userId) => {
-  const response = await fetch(`/api/users/${userId}`); // API to fetch user data
+  const response = await fetch(`/api/users/${userId}`); 
   const data = await response.json();
-  return data; // This will return the user info
+  return data; 
 });
 
 
