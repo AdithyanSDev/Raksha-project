@@ -69,57 +69,56 @@ const AlertsSection: React.FC = () => {
   }, [isExpanded]);
 
   return (
-    <section className="p-8 bg-gradient-to-br from-green-600 to-blue-500 shadow-md my-6 flex relative">
-    <div className="flex-1">
-  {alerts.length > 0 ? (
-    alerts.map((alert) => (
-      <div
-        key={alert.id}
-        className="p-6 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 mb-6 rounded-lg relative shadow-lg transform transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-2xl"
-        style={{ perspective: "1000px" }}
-        onMouseMove={(e) => {
-          const rect = e.currentTarget.getBoundingClientRect();
-          const x = e.clientX - rect.left; // X coordinate relative to the element
-          const y = e.clientY - rect.top;  // Y coordinate relative to the element
-          e.currentTarget.style.transform = `scale(1.05) rotateX(${(y - rect.height / 2) / 15}deg) rotateY(${-(x - rect.width / 2) / 15}deg)`;
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.transform = "scale(1)"; // Reset on mouse leave
-        }}
-      >
-        <h2 className="text-2xl font-bold text-yellow-800 mb-2">{alert.title}</h2>
-        <p className="text-yellow-900 text-lg mb-4">{alert.description}</p>
-        <p className="absolute bottom-2 right-2 text-sm text-gray-600">
-          {format(new Date(alert.createdAt), "MM/dd/yyyy, HH:mm")}
-        </p>
+    <section className="p-8 bg-gradient-to-br from-green-600 to-blue-500 shadow-md my-6 flex flex-wrap relative">
+      <div className="flex-1 mb-6 sm:mb-0">
+        {alerts.length > 0 ? (
+          alerts.map((alert) => (
+            <div
+              key={alert.id}
+              className="alert-card p-6 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 mb-6 rounded-lg relative shadow-lg transform transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-2xl"
+              style={{ perspective: "1000px" }}
+              onMouseMove={(e) => {
+                const rect = e.currentTarget.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                e.currentTarget.style.transform = `scale(1.05) rotateX(${(y - rect.height / 2) / 15}deg) rotateY(${-(x - rect.width / 2) / 15}deg)`;
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "scale(1)";
+              }}
+            >
+              <h2 className="text-2xl font-bold text-yellow-800 mb-2">{alert.title}</h2>
+              <p className="text-yellow-900 text-lg mb-4">{alert.description}</p>
+              <p className="absolute bottom-2 right-2 text-sm text-gray-600">
+                {format(new Date(alert.createdAt), "MM/dd/yyyy, HH:mm")}
+              </p>
+            </div>
+          ))
+        ) : (
+          <div
+            className="p-6 bg-green-100 border-l-4 border-green-500 text-green-700 rounded-lg shadow-lg transform transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-2xl"
+            style={{ perspective: "1000px" }}
+            onMouseMove={(e) => {
+              const rect = e.currentTarget.getBoundingClientRect();
+              const x = e.clientX - rect.left;
+              const y = e.clientY - rect.top;
+              e.currentTarget.style.transform = `scale(1.05) rotateX(${(y - rect.height / 2) / 15}deg) rotateY(${-(x - rect.width / 2) / 15}deg)`;
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "scale(1)";
+            }}
+          >
+            <h2 className="text-2xl font-bold text-green-800 mb-2">
+              Everything looks normal
+            </h2>
+            <p className="text-green-900 text-lg">Have a great day!</p>
+          </div>
+        )}
       </div>
-    ))
-  ) : (
-    <div
-      className="p-6 bg-green-100 border-l-4 border-green-500 text-green-700 rounded-lg shadow-lg transform transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-2xl"
-      style={{ perspective: "1000px" }}
-      onMouseMove={(e) => {
-        const rect = e.currentTarget.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        e.currentTarget.style.transform = `scale(1.05) rotateX(${(y - rect.height / 2) / 15}deg) rotateY(${-(x - rect.width / 2) / 15}deg)`;
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.transform = "scale(1)";
-      }}
-    >
-      <h2 className="text-2xl font-bold text-green-800 mb-2">
-        Everything looks normal
-      </h2>
-      <p className="text-green-900 text-lg">Have a great day!</p>
-    </div>
-  )}
-</div>
-
 
       {/* Small Map Section */}
       {!isExpanded && (
-        <div className="ml-6 w-1/2 relative z-10">
+        <div className="ml-6 sm:w-1/2 lg:w-1/3 xl:w-1/4 relative z-10">
           <MapContainer
             center={[20.5937, 78.9629]}
             zoom={5}

@@ -65,7 +65,7 @@ const App: React.FC = () => {
               <>
                 <Header />
                 <Banner />
-                <main className="container mx-auto px-4 relative z-10 -mt-20  bg-gradient-to-br from-blue-200 to-green-500 ">
+                <main className="container mx-auto px-4 relative z-10 -mt-20 bg-gradient-to-br from-blue-200 to-green-500 transition-all ease-in-out duration-500">
                   <AlertsSection />
                   <ResourceButtons />
                   <VolunteerSection />

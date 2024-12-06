@@ -63,9 +63,7 @@ const Header: React.FC = () => {
 
     return (
         <header
-            className={`fixed top-0 left-0 w-full z-20 p-4 flex justify-between items-center transition-all duration-300 ${
-                isScrolled ? 'bg-white shadow-md' : 'bg-transparent'
-            }`}
+            className={`fixed top-0 left-0 w-full z-20 p-4 flex justify-between items-center transition-all duration-300 ${isScrolled ? 'bg-white shadow-md' : 'bg-transparent'}`}
         >
             <div
                 className={`font-bold text-2xl ${isScrolled ? 'text-gray-900' : 'text-white'} cursor-pointer`}
@@ -84,7 +82,11 @@ const Header: React.FC = () => {
                         <div className="absolute right-0 mt-2 w-48 bg-white shadow-md rounded-lg py-2 z-50">
                             {!authState.isAuthenticated ? (
                                 <button
-                                    onClick={() => setShowModal('login')}
+                                    onClick={() => {
+                                        setShowModal('login');
+                                        console.log('showModal:', showModal); 
+                                        setShowUserDropdown(false);  // Close the dropdown when the login button is clicked
+                                    }}
                                     className="block w-full px-4 py-2 text-gray-800 hover:bg-gray-100 text-left"
                                 >
                                     Login
@@ -161,7 +163,12 @@ const Header: React.FC = () => {
                         <div className="absolute right-0 mt-2 w-48 bg-white shadow-md rounded-lg py-2 z-50">
                             {!authState.isAuthenticated ? (
                                 <button
-                                    onClick={() => setShowModal('login')}
+                                onClick={() => {
+                                    setShowModal('login');
+                                    console.log('showModal:', showModal);  // Log the state to verify if it's updated
+                                    setShowUserDropdown(false);  // Close the dropdown
+                                }}
+                                    
                                     className="block w-full px-4 py-2 text-gray-800 hover:bg-gray-100 text-left"
                                 >
                                     Login
@@ -192,7 +199,7 @@ const Header: React.FC = () => {
                     Donate Now
                 </button>
             </div>
-            {showModal === 'login' && <LoginModal closeModal={setShowModal} />}
+            {showModal === 'login' && <LoginModal closeModal={() => setShowModal(null)} />}
             {showModal === 'signup' && <SignupModal closeModal={() => setShowModal(null)} />}
         </header>
     );
