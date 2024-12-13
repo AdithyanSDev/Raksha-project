@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'sfkjPIFfjfipa'; // Ensure you have this set in your .env
+const JWT_SECRET = process.env.JWT_SECRET || 'sfkjPIFfjfipa';
 
 console.log("JWT_SECRET:", process.env.JWT_SECRET);
 
@@ -14,6 +14,7 @@ export const authMiddleware = (req: AuthRequest, res: Response, next: NextFuncti
     const authHeader = req.header('Authorization'); // Capture the Authorization header
     const token = authHeader?.replace('Bearer ', '');
     console.log("Extracted token:", token);
+    console.log("Authorization Header:", authHeader);
 
     if (!token) {
         return res.status(401).json({ message: 'No token provided, authorization denied' });

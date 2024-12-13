@@ -2,7 +2,7 @@ import { Router } from 'express';
 import MaterialDonationController from '../controllers/MaterialDonationController';
 import MonetaryDonationController from '../controllers/MonetaryDonationController';
 import { authMiddleware } from '../middlewares/authMiddleware';
-import upload from '../middlewares/upload';
+import upload from '../multer/upload';
 
 const router = Router();
 

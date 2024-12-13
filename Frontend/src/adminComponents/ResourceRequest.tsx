@@ -41,7 +41,11 @@ const ResourceRequests: React.FC = () => {
     try {
       await approveRequest(id, token || "");
       toast.success("Request approved successfully!");
-      fetchRequestsByStatus(statusFilter, token || "").then(setRequests);
+  
+      // Update the local state by removing the approved request
+      setRequests((prevRequests) =>
+        prevRequests.filter((request) => request._id !== id)
+      );
     } catch (error) {
       console.error("Error approving request:", error);
     }
@@ -56,12 +60,16 @@ const ResourceRequests: React.FC = () => {
       toast.error("Rejection reason cannot be empty!");
       return;
     }
-
+  
     try {
       if (rejectModal.requestId) {
         await rejectRequest(rejectModal.requestId, rejectionReason, token || "");
         toast.success("Request rejected successfully!");
-        fetchRequestsByStatus(statusFilter, token || "").then(setRequests);
+  
+        // Update the local state by removing the rejected request or adding rejection reason
+        setRequests((prevRequests) =>
+          prevRequests.filter((request) => request._id !== rejectModal.requestId)
+        );
       }
       setRejectModal({ show: false, requestId: null });
       setRejectionReason("");

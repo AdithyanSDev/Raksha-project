@@ -6,6 +6,21 @@ import { Server } from "socket.io";
 import cors from "cors";
 import passport from "passport";
 import session from "express-session";
+import { logger } from "./middlewares/logger";
+import errorMiddleware from "./middlewares/errorMiddleware";
+import userRoutes from "./routes/UserRoutes";
+import adminRoutes from "./routes/adminRoutes";
+import resourceRequestRoutes from "./routes/ResourceRoutes";
+import VolunteerRoutes from "./routes/VolunteerRoutes";
+import chatbotRoutes from "./routes/chatRoutes";
+import googleAuthRoutes from "./routes/auth";
+
+import "./googleAuth/passport";
+import DonationRoutes from "./routes/DonationRoutes";
+import alertRoutes from "./routes/alertRoutes";
+
+import { AlertService } from "./services/AlertService";
+
 
 const app = express();
 
@@ -39,7 +54,8 @@ app.use((req, res, next) => {
 // Initialize Passport and restore session
 app.use(passport.initialize());
 app.use(passport.session());
-
+app.use(logger);
+app.use(errorMiddleware)
 const server = http.createServer(app);
 
 // Initialize Socket.IO
@@ -75,18 +91,8 @@ io.on("connection", (socket) => {
     console.log("A user disconnected:", socket.id);
   });
 });
-import userRoutes from "./routes/UserRoutes";
-import adminRoutes from "./routes/adminRoutes";
-import resourceRequestRoutes from "./routes/ResourceRoutes";
-import VolunteerRoutes from "./routes/VolunteerRoutes";
-import chatbotRoutes from "./routes/chatRoutes";
-import googleAuthRoutes from "./routes/auth";
 
-import "./googleAuth/passport";
-import DonationRoutes from "./routes/DonationRoutes";
-import alertRoutes from "./routes/alertRoutes";
 
-import { AlertService } from "./services/AlertService";
 
 // Alert fetching every hour
 const alertService = new AlertService();

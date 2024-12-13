@@ -1,31 +1,14 @@
-// repositories/messageRepository.ts
+import { IMessageRepository } from '../interfaces/repositories/IChatbotRepository';
 import EmergencyAlert from '../models/EmergencyAlert';
+import { EmergencyAlertDTO } from '../dtos/EmergencyDTO';
 
-export class MessageRepository {
-  // async sendEmergencyToAdmin(data: {
-  //   userId: string;
-  //   name: string;
-  //   email: string;
-  //   phone: string;
-  //   location: string;
-  //   message: string;
-  //   timestamp: string;
-  // }) {
-  //   const emergencyAlert = new EmergencyAlert(data);
-  //   await emergencyAlert.save();
-  // }
-
-  async getAllEmergencyAlerts() {
+export class MessageRepository implements IMessageRepository {
+  async getAllEmergencyAlerts(): Promise<any[]> {
     return await EmergencyAlert.find().sort({ timestamp: -1 });
   }
-  async createEmergencyAlert(data: {
-    name: string;
-    email: string;
-    phone: string;
-    location: string;
-    userId: string;
-  }) {
-    const emergencyAlert = new EmergencyAlert(data);
-    return await emergencyAlert.save();
+
+  async createEmergencyAlert(data: EmergencyAlertDTO): Promise<any> {
+    const alert = new EmergencyAlert(data);
+    return await alert.save();
   }
 }

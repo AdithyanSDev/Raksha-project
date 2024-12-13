@@ -1,41 +1,30 @@
-// services/ChatbotService.ts
-import run from '../config/gemini'; // Assuming 'run' is the exported function in gemini
-import { isEmergency } from '../utils/EmergencyChecker';
+import run from '../config/gemini';
+import { IChatbotService } from '../interfaces/services/IChatbotService';
+import { ChatbotUserDTO } from '../dtos/ChatbotDTO';
+import { EmergencyAlertDTO } from '../dtos/EmergencyDTO';
 import { MessageRepository } from '../repositories/MessageRepository';
-import { User } from '../models/User';
+import { isEmergency } from '../utils/EmergencyChecker';
 
-class ChatbotService {
-  private messageRepo: MessageRepository;
+class ChatbotService implements IChatbotService {
+  private messageRepo = new MessageRepository();
 
-  constructor() {
-    this.messageRepo = new MessageRepository();
-  }
-
-  async handleUserMessage(message: string, userInfo: { userId: string, name?: string, email?: string, phone?: string, location?: string }) {
+  async handleUserMessage(message: string, userInfo: ChatbotUserDTO): Promise<{ response: string }> {
     if (isEmergency(message)) {
-      // If emergency keywords are detected, skip `run` and return a custom response
-      return { response: " Please fill out the emergency form to report your situation." };
+      return { response: "Please fill out the emergency form to report your situation." };
     }
-      // Call the Gemini configuration's run method
-      try {
-        const response = await run(message); // Pass message to run
-        return { response };
-      } catch (error) {
-        console.error('Error in Gemini run:', error);
-        return { response: 'Sorry, there was an error processing your request.' };
-      }
-    
+
+    try {
+      const response = await run(message);
+      return { response };
+    } catch (error) {
+      console.error('Error in Gemini run:', error);
+      return { response: 'Sorry, there was an error processing your request.' };
+    }
   }
-  async reportEmergency(data: {
-    name: string;
-    email: string;
-    phone: string;
-    location: string;
-    userId: string;
-  }) {
-    return await this.messageRepo.createEmergencyAlert(data);
+
+  async reportEmergency(data: EmergencyAlertDTO): Promise<any> {
+    return this.messageRepo.createEmergencyAlert(data);
   }
 }
-
 
 export default new ChatbotService();

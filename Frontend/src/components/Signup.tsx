@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { signupUser } from '../services/authService';
 import OtpModal from './Otp'; // Import the OTP modal
 import { FaGoogle, FaEnvelope, FaLock,FaUser } from 'react-icons/fa';
+import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
 import { toast } from 'react-toastify';
 
 interface SignupModalProps {
@@ -13,6 +14,8 @@ const SignupModal: React.FC<SignupModalProps> = ({ closeModal }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showOtpModal, setShowOtpModal] = useState(false); // State to toggle OTP modal
@@ -137,27 +140,44 @@ const SignupModal: React.FC<SignupModalProps> = ({ closeModal }) => {
                 />
               </div>
 
-              {/* Password Fields */}
-              <div className="relative w-full mb-4">
-                <FaLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
-                <input
-                  className="border w-full p-3 rounded-lg pl-10 text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 shadow-md"
-                  type="password"
-                  placeholder="Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-              </div>
-              <div className="relative w-full mb-6">
-                <FaLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
-                <input
-                  className="border w-full p-3 rounded-lg pl-10 text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 shadow-md"
-                  type="password"
-                  placeholder="Confirm Password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                />
-              </div>
+                   {/* Password Field */}
+      <div className="relative w-full mb-4">
+        <FaLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+        <input
+          className="border w-full p-3 rounded-lg pl-10 text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 shadow-md"
+          type={showPassword ? 'text' : 'password'}
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <button
+          type="button"
+          onClick={() => setShowPassword(!showPassword)}
+          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 focus:outline-none"
+        >
+          {showPassword ? <AiFillEyeInvisible /> : <AiFillEye />}
+        </button>
+      </div>
+
+      {/* Confirm Password Field */}
+      <div className="relative w-full mb-6">
+        <FaLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+        <input
+          className="border w-full p-3 rounded-lg pl-10 text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 shadow-md"
+          type={showConfirmPassword ? 'text' : 'password'}
+          placeholder="Confirm Password"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+        />
+        <button
+          type="button"
+          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 focus:outline-none"
+        >
+          {showConfirmPassword ? <AiFillEyeInvisible /> : <AiFillEye />}
+        </button>
+      </div>
+
 
               {error && <p className="text-red-500 text-center mb-4">{error}</p>}
 

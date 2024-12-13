@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { fetchAlerts } from "../services/alertService";
 import { getUserProfile } from "../services/UserService";
+import { useSelector } from "react-redux";
+import { selectAuthToken } from "../features/auth/authSlice";
 import axios from "axios";
 import Footer from "./Footer";
 import Header from "./Header";
 
 const AlertPage: React.FC = () => {
+  const token = useSelector(selectAuthToken);
+  console.log("Token from Redux:", token);
   const [alerts, setAlerts] = useState<any[]>([]);
   const [weather, setWeather] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -50,7 +54,7 @@ const AlertPage: React.FC = () => {
         const userProfile = await getUserProfile();
         setUsername(userProfile.username);
 
-        const alertData = await fetchAlerts();
+        const alertData = await fetchAlerts(token);
         const sortedAlerts = alertData.sort(
           (a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime()
         );
@@ -77,7 +81,7 @@ const AlertPage: React.FC = () => {
     };
 
     fetchData();
-  }, []);
+  }, [token]);
 
   const getWeatherIcon = (iconCode: string) =>
     `https://openweathermap.org/img/wn/${iconCode}@4x.png`;

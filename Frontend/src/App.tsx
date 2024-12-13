@@ -36,6 +36,7 @@ import AlertPage from "./components/AlertPage";
 import Map from "./components/Map";
 import DisasterBanner from "./components/DisasterBanner";
 import DonationBanner from "./components/DonationBanner";
+import AdminProtectedRoute from "./components/AdminProtectedRoute";
 
 
 
@@ -78,7 +79,7 @@ const App: React.FC = () => {
           />
 
           {/* Existing routes */}
-          <Route path="/admin-dashboard" element={<AdminDashboard />} />
+          <Route path="/admin-dashboard" element={<AdminProtectedRoute component={AdminDashboard} />} />
           <Route path="/upload-banner" element={<BannerUpload />} />
           <Route path="/resource-requests" element={<ResourceRequests />} />
           <Route path="/resource-management" element={<ResourceManagement />} />

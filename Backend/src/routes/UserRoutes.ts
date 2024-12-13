@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { UserController } from '../controllers/UserController';
 import { googleAuthCallback } from '../controllers/AuthController';
 import { authMiddleware } from '../middlewares/authMiddleware';
-import upload from '../middlewares/upload';
+import upload from '../multer/upload';
 
 const router = Router();
 const userController = new UserController();
@@ -15,6 +15,8 @@ router.post('/verify-otp', userController.verifyOtp);
 router.post("/forgot-password", userController.forgotPassword);
 router.post("/verify-forgot-otp", userController.verifyForgotOtp);
 router.post("/reset-password", userController.resetPassword);
+router.post('/resend-otp', userController.resendOtp);
+
 
 // Define Google OAuth route
 router.get('/auth/google/callback', googleAuthCallback);

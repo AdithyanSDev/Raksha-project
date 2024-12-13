@@ -2,21 +2,22 @@ import { Request, Response } from 'express';
 import MaterialDonationService from '../services/MaterialDonationService';
 import { CreateMaterialDonationDTO, UpdateMaterialDonationStatusDTO } from '../dtos/MaterialDonationDTO';
 import { User } from '../models/User';
+import { IMaterialDonationController } from '../interfaces/controllers/IMaterialDonationController';
 
-class MaterialDonationController {
-  async createMaterialDonation(req: Request, res: Response) {
+class MaterialDonationController implements IMaterialDonationController {
+  async createMaterialDonation(req: Request, res: Response): Promise<void> {
     const { itemName, quantity, userId } = req.body;
     const images = req.files ? (req.files as Express.MulterS3.File[]).map(file => file.location) : [];
 
     try {
       const user = await User.findById(userId);
       if (!user || !user.username) {
-        return res.status(404).json({ error: 'User not found or missing username' });
+        res.status(404).json({ error: 'User not found or missing username' });
+        return;
       }
 
-      const donorName = user.username;
       const donationData: CreateMaterialDonationDTO = {
-        donorName,
+        donorName: user.username,
         item: itemName,
         quantity,
         userId,
@@ -30,7 +31,7 @@ class MaterialDonationController {
     }
   }
 
-  async getApprovedDonations(req: Request, res: Response) {
+  async getApprovedDonations(req: Request, res: Response): Promise<void> {
     try {
       const donations = await MaterialDonationService.getApprovedDonations();
       res.json(donations);
@@ -39,7 +40,7 @@ class MaterialDonationController {
     }
   }
 
-  async getPendingDonations(req: Request, res: Response) {
+  async getPendingDonations(req: Request, res: Response): Promise<void> {
     try {
       const donations = await MaterialDonationService.getPendingDonations();
       res.json(donations);
@@ -48,7 +49,7 @@ class MaterialDonationController {
     }
   }
 
-  async updateDonationStatus(req: Request, res: Response) {
+  async updateDonationStatus(req: Request, res: Response): Promise<void> {
     const { id } = req.params;
     const { status, cancelReason } = req.body;
 

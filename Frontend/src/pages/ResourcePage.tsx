@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from 'react';
 import Footer from '../components/Footer';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { selectAuthToken } from '../features/auth/authSlice';
 
 // Updated Resource interface to match the model
 interface Resource {
@@ -11,27 +13,38 @@ interface Resource {
   quantity: number;
   location: string;
   description: string;
-  available: boolean; // Only show resources if this is true
+  available: boolean; 
   image: string;
 }
 
 const ResourcesPage: React.FC = () => {
   const [resources, setResources] = useState<Resource[]>([]);
   const [selectedResource, setSelectedResource] = useState<Resource | null>(null);
-
+  const token = useSelector(selectAuthToken);
+  console.log("Token from Redux:", token);
   useEffect(() => {
     fetchResources();
   }, []);
 
   const fetchResources = async () => {
     try {
-      const response = await fetch('/api/resources/resources'); // Fetching from the backend
+      const response = await fetch('/api/resources/resources', {
+        headers: {
+          Authorization: `Bearer ${token}`, 
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+  
       const data = await response.json();
       setResources(data);
     } catch (error) {
       console.error('Error fetching resources:', error);
     }
   };
+  
 
   const handleViewDetails = (resource: Resource) => {
     setSelectedResource(resource); // Open modal with resource details

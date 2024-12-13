@@ -2,10 +2,9 @@ import { Request, Response } from "express";
 import { UserService } from "../services/UserService";
 import { UserDTO } from "../dtos/UserDTO";
 import { validate } from "class-validator";
-import s3 from "../config/awsS3";
-import { User } from "../models/User";
+import { IUserController } from "../interfaces/controllers/IUserController";
 
-export class UserController {
+export class UserController implements IUserController {
   private userService: UserService;
 
   constructor() {
@@ -13,9 +12,8 @@ export class UserController {
   }
 
   signup = async (req: Request, res: Response): Promise<Response> => {
-    const { username, email, password, latitude, longitude, role } = req.body; // Include role
+    const { username, email, password, latitude, longitude, role } = req.body;
 
-    // Validate request data
     const userDTO = new UserDTO();
     userDTO.username = username;
     userDTO.email = email;
@@ -35,7 +33,6 @@ export class UserController {
         longitude,
         role
       );
-      // Simulate sending OTP via email
       return res.status(200).json({ message: "OTP sent to email", otp });
     } catch (error: any) {
       return res.status(400).json({ message: error.message });
@@ -44,7 +41,7 @@ export class UserController {
 
   verifyOtp = async (req: Request, res: Response): Promise<Response> => {
     const { email, otp, username, password, latitude, longitude, role } =
-      req.body; // Include role
+      req.body;
 
     try {
       const { user, token } = await this.userService.verifyOtp(
@@ -64,10 +61,10 @@ export class UserController {
 
   login = async (req: Request, res: Response): Promise<Response> => {
     const { email, password, latitude, longitude } = req.body;
-    console.log(req.body)
+
     if (!email || !password || latitude === undefined || longitude === undefined) {
       return res.status(400).json({
-        message: 'Email, password, latitude, and longitude are required.',
+        message: "Email, password, latitude, and longitude are required.",
       });
     }
 
@@ -78,34 +75,29 @@ export class UserController {
         latitude,
         longitude
       );
-      console.log(user)
       return res.status(200).json({ user, token, refreshToken });
     } catch (error: any) {
       return res.status(400).json({ message: error.message });
     }
   };
 
-
-  // Route to refresh access token
   refreshToken = async (req: Request, res: Response): Promise<Response> => {
     const { refreshToken } = req.body;
-  
+
     if (!refreshToken) {
       return res.status(400).json({ message: "Refresh token is required" });
     }
-  
+
     try {
       const { accessToken, refreshToken: newRefreshToken } =
         await this.userService.refreshToken(refreshToken);
-  
+
       return res.status(200).json({ accessToken, refreshToken: newRefreshToken });
     } catch (error: any) {
       return res.status(401).json({ message: "Invalid refresh token" });
     }
   };
-  
 
-  // Fetch User Profile Controller Method
   getUserProfile = async (req: Request, res: Response): Promise<Response> => {
     const userId = (req as any).user.id;
 
@@ -122,11 +114,7 @@ export class UserController {
     }
   };
 
-  // Update User Profile Controller Method
-  updateUserProfile = async (
-    req: Request,
-    res: Response
-  ): Promise<Response> => {
+  updateUserProfile = async (req: Request, res: Response): Promise<Response> => {
     const userId = (req as any).user.id;
     const updatedData = req.body;
 
@@ -146,14 +134,14 @@ export class UserController {
     }
   };
 
-  uploadProfilePicture = async (req: Request, res: Response) => {
+  uploadProfilePicture = async (req: Request, res: Response): Promise<Response> => {
     const userId = (req as any).user.id;
 
     if (!req.file) {
       return res.status(400).json({ message: "No file uploaded" });
     }
 
-    const fileLocation = (req.file as any).location; // Ensure this is the correct location property
+    const fileLocation = (req.file as any).location;
 
     try {
       const updatedUser = await this.userService.updateUserProfile(userId, {
@@ -162,14 +150,11 @@ export class UserController {
       if (!updatedUser) {
         return res.status(404).json({ message: "User not found" });
       }
-      return res
-        .status(200)
-        .json({
-          message: "Profile picture uploaded successfully",
-          user: updatedUser,
-        });
+      return res.status(200).json({
+        message: "Profile picture uploaded successfully",
+        user: updatedUser,
+      });
     } catch (error: any) {
-      console.error("Error updating profile picture:", error);
       return res
         .status(500)
         .json({ message: "Error updating profile picture", error });
@@ -181,55 +166,71 @@ export class UserController {
     const { isBlocked } = req.body;
 
     try {
-        const updatedUser = await this.userService.toggleUserStatus(userId, isBlocked);
-        if (!updatedUser) return res.status(404).json({ message: "User not found" });
-        return res.status(200).json(updatedUser);
+      const updatedUser = await this.userService.toggleUserStatus(userId, isBlocked);
+      if (!updatedUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      return res.status(200).json(updatedUser);
     } catch (error: any) {
-        return res.status(500).json({ message: "Error toggling user status", error });
+      return res.status(500).json({ message: "Error toggling user status", error });
+    }
+  };
+
+  getAllUsers = async (req: Request, res: Response): Promise<Response> => {
+    try {
+      const users = await this.userService.getAllUsers();
+      return res.status(200).json(users);
+    } catch (error: any) {
+      return res.status(500).json({ message: "Failed to fetch users", error });
+    }
+  };
+
+  forgotPassword = async (req: Request, res: Response): Promise<Response> => {
+    const { email } = req.body;
+
+    try {
+      const otp = await this.userService.generateForgotPasswordOtp(email);
+      return res.status(200).json({ message: "OTP sent to email", otp });
+    } catch (error: any) {
+      return res.status(400).json({ message: error.message });
+    }
+  };
+
+  verifyForgotOtp = async (req: Request, res: Response): Promise<Response> => {
+    const { email, otp } = req.body;
+
+    try {
+      await this.userService.verifyForgotPasswordOtp(email, otp);
+      return res.status(200).json({ message: "OTP verified" });
+    } catch (error: any) {
+      return res.status(400).json({ message: error.message });
+    }
+  };
+  resendOtp = async (req: Request, res: Response): Promise<Response> => {
+    const { email } = req.body;
+
+    if (!email) {
+        return res.status(400).json({ message: 'Email is required.' });
+    }
+
+    try {
+        const otp = await this.userService.resendOtp(email);
+        console.log(otp)
+        return res.status(200).json({ message: 'OTP resent successfully.', otp });
+    } catch (error: any) {
+        return res.status(400).json({ message: error.message });
     }
 };
 
-getAllUsers = async (req: Request, res: Response) => {
-  try {
-      const users = await this.userService.getAllUsers();
-      res.status(200).json(users);
-  } catch (error) {
-      res.status(500).json({ message: "Failed to fetch users" });
-  }
-};
- // Forgot Password - Send OTP
- forgotPassword = async (req: Request, res: Response): Promise<Response> => {
-  const { email } = req.body;
- console.log(email)
-  try {
-    const otp = await this.userService.generateForgotPasswordOtp(email);
-    return res.status(200).json({ message: "OTP sent to email", otp });
-  } catch (error: any) {
-    return res.status(400).json({ message: error.message });
-  }
-};
 
-// Verify OTP for Forgot Password
-verifyForgotOtp = async (req: Request, res: Response): Promise<Response> => {
-  const { email, otp } = req.body;
+  resetPassword = async (req: Request, res: Response): Promise<Response> => {
+    const { email, newPassword } = req.body;
 
-  try {
-    await this.userService.verifyForgotPasswordOtp(email, otp);
-    return res.status(200).json({ message: "OTP verified" });
-  } catch (error: any) {
-    return res.status(400).json({ message: error.message });
-  }
-};
-
-// Reset Password
-resetPassword = async (req: Request, res: Response): Promise<Response> => {
-  const { email, newPassword } = req.body;
-
-  try {
-    await this.userService.resetPassword(email, newPassword);
-    return res.status(200).json({ message: "Password reset successful" });
-  } catch (error: any) {
-    return res.status(400).json({ message: error.message });
-  }
-};
+    try {
+      await this.userService.resetPassword(email, newPassword);
+      return res.status(200).json({ message: "Password reset successful" });
+    } catch (error: any) {
+      return res.status(400).json({ message: error.message });
+    }
+  };
 }

@@ -1,7 +1,8 @@
 import { BaseRepository } from './BaseRepository';
 import MaterialDonation, { IMaterialDonation } from '../models/MaterialDonation';
+import { IMaterialDonationRepository } from '../interfaces/repositories/IMaterialDonationRepository';
 
-class MaterialDonationRepository extends BaseRepository<IMaterialDonation> {
+class MaterialDonationRepository extends BaseRepository<IMaterialDonation> implements IMaterialDonationRepository {
   constructor() {
     super(MaterialDonation);
   }

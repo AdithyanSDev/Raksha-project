@@ -2,32 +2,34 @@
 import { Request, Response } from 'express';
 import { ResourceRequestService } from '../services/ResourceRequest';
 import { handleError } from '../utils/ErrorHandler';
+import { IResourceRequestController } from '../interfaces/controllers/IResourceRequestController';
 
-export class ResourceRequestController {
+export class ResourceRequestController implements IResourceRequestController {
   private resourceRequestService: ResourceRequestService;
 
   constructor() {
     this.resourceRequestService = new ResourceRequestService();
   }
 
-  createResourceRequest = async (req: Request, res: Response) => {
+  async createResourceRequest(req: Request, res: Response): Promise<void> {
     try {
       const resourceRequest = await this.resourceRequestService.createResourceRequest(req.body);
       res.status(201).json(resourceRequest);
     } catch (error) {
       handleError(res, 'Failed to create resource request', error);
     }
-  };
+  }
 
-  getAllResourceRequests = async (req: Request, res: Response) => {
+  async getAllResourceRequests(req: Request, res: Response): Promise<void> {
     try {
       const resourceRequests = await this.resourceRequestService.getAllResourceRequests();
       res.status(200).json(resourceRequests);
     } catch (error) {
       handleError(res, 'Failed to fetch resource requests', error);
     }
-  };
-  approveRequest = async (req: Request, res: Response) => {
+  }
+
+  async approveRequest(req: Request, res: Response): Promise<void> {
     try {
       const { id } = req.params;
       const updatedRequest = await this.resourceRequestService.approveRequest(id);
@@ -35,9 +37,9 @@ export class ResourceRequestController {
     } catch (error) {
       handleError(res, 'Failed to approve resource request', error);
     }
-  };
-  
-  rejectRequest = async (req: Request, res: Response) => {
+  }
+
+  async rejectRequest(req: Request, res: Response): Promise<void> {
     try {
       const { id } = req.params;
       const { rejectionReason } = req.body;
@@ -46,9 +48,9 @@ export class ResourceRequestController {
     } catch (error) {
       handleError(res, 'Failed to reject resource request', error);
     }
-  };
-  
-  getRequestsByStatus = async (req: Request, res: Response) => {
+  }
+
+  async getRequestsByStatus(req: Request, res: Response): Promise<void> {
     try {
       const { status } = req.params;
       const requests = await this.resourceRequestService.getRequestsByStatus(status);
@@ -56,6 +58,5 @@ export class ResourceRequestController {
     } catch (error) {
       handleError(res, 'Failed to fetch resource requests by status', error);
     }
-  };
-  
+  }
 }

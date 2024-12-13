@@ -1,12 +1,19 @@
-// src/services/alertService.ts
 import axios from "axios";
 
-export const fetchAlerts = async () => {
-  const response = await axios.get("/api/alerts"); 
-  return response.data.alerts || response.data; 
+export const fetchAlerts = async (token: string) => {
+  const response = await axios.get("/api/alerts", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data.alerts || response.data;
 };
 
-export const createAlert = async (alertData: any) => {
-  const response = await axios.post("/api/alerts", alertData);
+export const createAlert = async (alertData: any, token: string) => {
+  const response = await axios.post("/api/alerts", alertData, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
   return response.data;
 };

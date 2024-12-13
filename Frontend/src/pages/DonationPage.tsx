@@ -9,7 +9,7 @@ const DonationPage: React.FC = () => {
     const [activeForm, setActiveForm] = useState<'material' | 'monetary' | null>(null);
 
     return (
-        <div>
+        <div className='bg-gradient-to-r from-blue-200 to-green-200'>
             {/* Header */}
             <header className="bg-green-800 text-white py-4 text-3xl font-bold w-full">
                 <Link to="/" className="hover:underline ml-4">Raksha</Link>
@@ -35,7 +35,7 @@ const DonationPage: React.FC = () => {
                 </div>
 
                 {/* Donation Section */}
-                <div className="bg-white py-8 rounded-b-lg shadow-sm w-full max-w-6xl">
+                <div className="bg-gradient-to-r from-purple-200 to-green-300 py-8 rounded-b-lg shadow-sm w-full max-w-6xl">
                     <div className="text-center mb-6 px-4">
                         <h2 className="text-2xl lg:text-3xl font-bold text-gray-900">Choose Your Way to Help</h2>
                         <p className="text-gray-600 text-sm lg:text-base">

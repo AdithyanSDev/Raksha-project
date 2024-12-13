@@ -8,6 +8,5 @@ const s3 = new S3Client({
         secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY as string,
     },
 });
-console.log('heyyyy seafdf')
 
 export default s3;

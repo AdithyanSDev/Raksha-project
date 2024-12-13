@@ -26,7 +26,7 @@ const MaterialDonationForm: React.FC = () => {
             images.forEach((image) => formData.append('materialImages', image)); // Append using "materialImages"
 
             await createMaterialDonation(formData);
-            toast.success('Material donation created successfully!');
+            toast.success('Material donated successfully!');
             setItemName('');
             setQuantity('');
             setImages([]);

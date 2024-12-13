@@ -199,8 +199,9 @@ const Header: React.FC = () => {
                     Donate Now
                 </button>
             </div>
-            {showModal === 'login' && <LoginModal closeModal={() => setShowModal(null)} />}
-            {showModal === 'signup' && <SignupModal closeModal={() => setShowModal(null)} />}
+            {showModal === 'login' && <LoginModal closeModal={(modalType) => setShowModal(modalType || null)} />}
+{showModal === 'signup' && <SignupModal closeModal={(modalType) => setShowModal(modalType || null)} />}
+
         </header>
     );
 };

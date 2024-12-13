@@ -3,7 +3,7 @@ import express from 'express';
 // import { adminLogin } from '../controllers/adminController';
 import { UserController } from '../controllers/UserController';
 import BannerController from '../controllers/BannerController';
-import upload from '../middlewares/upload';
+import upload from '../multer/upload';
 
 const router = express.Router();
 const userController = new UserController();

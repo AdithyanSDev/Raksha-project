@@ -1,21 +1,38 @@
-import ResourceRepository from '../repositories/ResourceRepository';
+import { IResourceService } from '../interfaces/services/IResourceService';
 import { ResourceDTO } from '../dtos/ResourceDTO';
+import ResourceRepository from '../repositories/ResourceRepository';
 
-class ResourceService {
-  async createResource(resourceData: ResourceDTO) {
-    return await ResourceRepository.createResource(resourceData);
+class ResourceService implements IResourceService {
+  async createResource(resourceData: ResourceDTO): Promise<any> {
+    try {
+      return await ResourceRepository.createResource(resourceData);
+    } catch (error) {
+      throw new Error('Error creating resource');
+    }
   }
 
-  async getAllResources() {
-    return await ResourceRepository.getAllResources();
+  async getAllResources(): Promise<any> {
+    try {
+      return await ResourceRepository.getAllResources();
+    } catch (error) {
+      throw new Error('Error fetching resources');
+    }
   }
 
-  async updateResource(id: string, resourceData: Partial<ResourceDTO>) {
-    return await ResourceRepository.updateResource(id, resourceData);
+  async updateResource(id: string, resourceData: Partial<ResourceDTO>): Promise<any> {
+    try {
+      return await ResourceRepository.updateResource(id, resourceData);
+    } catch (error) {
+      throw new Error('Error updating resource');
+    }
   }
 
-  async deleteResource(id: string) {
-    return await ResourceRepository.deleteResource(id);
+  async deleteResource(id: string): Promise<void> {
+    try {
+      await ResourceRepository.deleteResource(id);
+    } catch (error) {
+      throw new Error('Error deleting resource');
+    }
   }
 }
 
