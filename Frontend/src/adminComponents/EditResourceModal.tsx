@@ -1,6 +1,6 @@
 // components/EditResourceModal.tsx
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../services/axiosConfig";
 
 interface EditResourceModalProps {
   resource: Resource | null;
@@ -79,7 +79,7 @@ const EditResourceModal: React.FC<EditResourceModalProps> = ({
       }
 
       try {
-        const response = await axios.put(`/api/resources/resources/${resource._id}`, formDataToSubmit, {
+        const response = await api.put(`/api/resources/resources/${resource._id}`, formDataToSubmit, {
           headers: {
             "Content-Type": "multipart/form-data",
           },

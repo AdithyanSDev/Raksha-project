@@ -6,7 +6,6 @@ import CameraComponent from "./CameraComponent";
 import ProfilePictureModal from "./ProfilePictureModal";
 import { logout } from "../features/auth/authSlice";
 import Footer from "./Footer";
-import Header from "./Header";
 import ProfileForm from "./EditProfileForm";
 import { updateUserProfile, uploadProfilePictureToS3 } from "../services/UserService";
 import ProfileSidebar from "./ProfileSidebar"; // New Sidebar Component
@@ -15,7 +14,7 @@ import { Link } from "react-router-dom";
 const ProfilePage = () => {
   const dispatch: AppDispatch = useDispatch();
   const { profile } = useSelector((state: any) => state.user);
-  const token = localStorage.getItem("token");
+
 
   const [formData, setFormData] = useState({
     username: "",
@@ -95,7 +94,7 @@ const ProfilePage = () => {
 
   const uploadImage = async (file: File) => {
     try {
-      const response = await uploadProfilePictureToS3(file, token || "");
+      const response = await uploadProfilePictureToS3(file);
       if (response && response.data && response.data.user) {
         const profilePictureUrl = response.data.user.profilePicture;
 
@@ -104,7 +103,7 @@ const ProfilePage = () => {
           profilePicture: profilePictureUrl,
         });
 
-        await updateUserProfile({ ...formData, profilePicture: profilePictureUrl }, token || "");
+        await updateUserProfile({ ...formData, profilePicture: profilePictureUrl });
       } else {
         console.error("Unexpected response structure:", response);
       }
@@ -122,7 +121,7 @@ const ProfilePage = () => {
     if (!validateForm()) return;
 
     try {
-      await updateUserProfile(formData, token || "");
+      await updateUserProfile(formData);
       dispatch(fetchUserProfile());
       setIsEditing(false);
     } catch (error) {

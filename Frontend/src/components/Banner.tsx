@@ -1,5 +1,6 @@
-import axios from 'axios';
+
 import React, { useEffect, useState } from 'react';
+import api from '../services/axiosConfig';
 
 const Banner: React.FC = () => {
     const [bannerUrl, setBannerUrl] = useState('');
@@ -7,7 +8,7 @@ const Banner: React.FC = () => {
     useEffect(() => {
         const fetchBanner = async () => {
             try {
-                const response = await axios.get('/api/admin/banner');
+                const response = await api.get('/api/admin/banner');
                 setBannerUrl(response.data.imageUrl);
             } catch (error) {
                 console.error('Error fetching banner:', error);

@@ -1,29 +1,21 @@
-
+import api from './axiosConfig';  // Import the axios instance
 
 export const sendResourceRequest = async (formData: any, token: string) => {
   try {
-
     const userId = formData.userId;
 
     const dataToSend = {
       ...formData,
       userId, // Include userId in the request
     };
-  console.log(userId,"usrid")
-    const response = await fetch('/api/resources/request', {
-      method: 'POST',
+
+    const response = await api.post('/api/resources/request', dataToSend, {
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`, // Include the token in the Authorization header
+        Authorization: `Bearer ${token}`, // Authorization is handled by axios interceptors, but you can still include it here if needed.
       },
-      body: JSON.stringify(dataToSend), // Send the data including userId
     });
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    return response.json(); // Return the response data
+    return response.data; // Return the response data
   } catch (error) {
     console.error('Error sending resource request:', error);
     throw error; // Propagate the error for handling
@@ -31,29 +23,43 @@ export const sendResourceRequest = async (formData: any, token: string) => {
 };
 
 export const approveRequest = async (id: string, token: string) => {
-  const response = await fetch(`/api/resources/request/${id}/approve`, {
-    method: 'PUT',
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  return response.json();
+  try {
+    const response = await api.put(`/api/resources/request/${id}/approve`, {}, {
+      headers: { 
+        Authorization: `Bearer ${token}` 
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('Error approving request:', error);
+    throw error;
+  }
 };
 
 export const rejectRequest = async (id: string, reason: string, token: string) => {
-  const response = await fetch(`/api/resources/request/${id}/reject`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify({ rejectionReason: reason }),
-  });
-  return response.json();
+  try {
+    const response = await api.put(`/api/resources/request/${id}/reject`, 
+      { rejectionReason: reason },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error('Error rejecting request:', error);
+    throw error;
+  }
 };
 
 export const fetchRequestsByStatus = async (status: string, token: string) => {
-  const response = await fetch(`/api/resources/requests/${status}`, {
-    method: 'GET',
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  return response.json();
+  try {
+    const response = await api.get(`/api/resources/requests/${status}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching requests:', error);
+    throw error;
+  }
 };

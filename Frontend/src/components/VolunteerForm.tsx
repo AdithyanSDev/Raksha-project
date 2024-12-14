@@ -3,8 +3,10 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
 import Footer from './Footer';
 import { registerVolunteerService } from '../../src/services/volunteerService';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify'; // Import react-toastify
 
+// Add Location interface
 interface Location {
     latitude: number;
     longitude: number;
@@ -19,6 +21,7 @@ const VolunteerRegistration: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(false);
 
     const userId = useSelector((state: RootState) => state.auth.userId);
+    const navigate = useNavigate(); // Initialize useNavigate
 
     useEffect(() => {
         if ('geolocation' in navigator) {
@@ -62,6 +65,12 @@ const VolunteerRegistration: React.FC = () => {
             const data = await registerVolunteerService(payload);
             console.log('Volunteer registered:', data);
             setLoading(false);
+            // Show success message
+            toast.success('Volunteer registration request has been sent to the admin!');
+            // Redirect to homepage after the toast message
+            setTimeout(() => {
+                navigate('/'); // Redirect to the homepage
+            }, 3000); // Delay the redirect to allow the toast to show
         } catch {
             setError('Error registering volunteer');
             setLoading(false);

@@ -1,7 +1,7 @@
 // volunteerService.ts
-import axios from 'axios';
+import api from './axiosConfig'; 
 
-const BASE_URL = 'http://localhost:5000'
+
 
 interface User {
     phoneNumber?: string;
@@ -34,9 +34,10 @@ export interface VolunteerData {
 }
 
 
+
 export const registerVolunteerService = async (volunteerData: VolunteerData) => {
     try {
-        const { data } = await axios.post('/api/volunteer', { ...volunteerData, status: 'Requested' }, {
+        const { data } = await api.post('/api/volunteer', { ...volunteerData, status: 'Requested' }, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('token')}`,
             },
@@ -50,7 +51,7 @@ export const registerVolunteerService = async (volunteerData: VolunteerData) => 
 
 export const fetchVolunteers = async (): Promise<VolunteerData[]> => {
     try {
-        const { data } = await axios.get('/api/volunteers', {
+        const { data } = await api.get('/api/volunteers', {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('token')}`, // Auth token if needed
             },
@@ -62,7 +63,7 @@ export const fetchVolunteers = async (): Promise<VolunteerData[]> => {
 };
 export const fetchPendingVolunteers = async (): Promise<VolunteerData[]> => {
     try {
-        const { data } = await axios.get('/api/volunteers/pending', {
+        const { data } = await api.get('/api/volunteers/pending', {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('token')}`,
             },
@@ -78,7 +79,7 @@ export const fetchPendingVolunteers = async (): Promise<VolunteerData[]> => {
 // volunteerService.ts
 export const approveVolunteer = async (volunteerId: string) => {
     try {
-        await axios.put(`/api/volunteers/${volunteerId}/approve`, {}, {
+        await api.put(`/api/volunteers/${volunteerId}/approve`, {}, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('token')}`,
             },
@@ -92,7 +93,7 @@ export const approveVolunteer = async (volunteerId: string) => {
 
 export const rejectVolunteer = async (volunteerId: string) => {
     try {
-        await axios.put(`/api/volunteers/${volunteerId}/reject`, {}, {
+        await api.put(`/api/volunteers/${volunteerId}/reject`, {}, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('token')}`,
             },
@@ -106,7 +107,7 @@ export const rejectVolunteer = async (volunteerId: string) => {
 // volunteerService.ts
 export const checkVolunteerStatus = async (userId: string): Promise<boolean> => {
     try {
-        const { data } = await axios.get(`${BASE_URL}/api/volunteers/check/${userId}`, {
+        const { data } = await api.get(`/api/volunteers/check/${userId}`, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('token')}`,
             },
@@ -120,17 +121,17 @@ export const checkVolunteerStatus = async (userId: string): Promise<boolean> => 
 
 export async function assignTaskToVolunteer(volunteerId: string, task: string): Promise<void> {
     console.log(volunteerId);
-    await axios.put(`/api/volunteers/${volunteerId}/assign-task`, { task });
+    await api.put(`/api/volunteers/${volunteerId}/assign-task`, { task });
   }
 
   export const fetchVolunteerById = async (id: string): Promise<VolunteerData> => {
-    const response = await axios.get(`/api/volunteers/${id}`);
+    const response = await api.get(`/api/volunteers/${id}`);
     return response.data;
   };
   
   export const fetchVolunteerDataByUserId = async (userId: string): Promise<VolunteerData> => {
     try {
-        const { data } = await axios.get(`/api/volunteer/${userId}`, {
+        const { data } = await api.get(`/api/volunteer/${userId}`, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('token')}`,
             },
@@ -143,7 +144,7 @@ export async function assignTaskToVolunteer(volunteerId: string, task: string): 
 
 export const updateVolunteerProfile = async (volunteerId: string, updatedData: Partial<VolunteerData>): Promise<VolunteerData> => {
     try {
-        const { data } = await axios.put(`/api/volunteers/${volunteerId}`, updatedData, {
+        const { data } = await api.put(`/api/volunteers/${volunteerId}`, updatedData, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('token')}`,
             },

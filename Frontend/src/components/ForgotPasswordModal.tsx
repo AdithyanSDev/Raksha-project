@@ -1,7 +1,7 @@
 import { useState } from "react";
-import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import api from "../services/axiosConfig";
 
 interface ForgotPasswordModalProps {
   closeModal: () => void;
@@ -16,7 +16,7 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({ closeModal })
 
   const handleSendOtp = async () => {
     try {
-      await axios.post("/api/users/forgot-password", { email });
+      await api.post("/api/users/forgot-password", { email });
       toast.success("OTP sent successfully!");
       setStep(2);
     } catch (error) {
@@ -26,7 +26,7 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({ closeModal })
 
   const handleVerifyOtp = async () => {
     try {
-      await axios.post("/api/users/verify-forgot-otp", { email, otp });
+      await api.post("/api/users/verify-forgot-otp", { email, otp });
       toast.success("OTP verified successfully!");
       setStep(3);
     } catch (error) {
@@ -40,7 +40,7 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({ closeModal })
       return;
     }
     try {
-      await axios.post("/api/users/reset-password", { email, newPassword });
+      await api.post("/api/users/reset-password", { email, newPassword });
       toast.success("Password reset successful!");
       closeModal();
     } catch (error) {

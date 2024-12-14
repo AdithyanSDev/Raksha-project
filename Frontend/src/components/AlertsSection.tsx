@@ -6,6 +6,8 @@ import { format } from "date-fns";
 import { FaExpand, FaTimes } from "react-icons/fa";
 import L from "leaflet";
 import ScrollReveal from 'scrollreveal';
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
 
 interface Alert {
   id: string;
@@ -20,7 +22,7 @@ const AlertsSection: React.FC = () => {
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const [isExpanded, setIsExpanded] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
-
+const token = useSelector((state: RootState) => state.auth.token); 
   useEffect(() => {
     ScrollReveal().reveal('.alert-card', {
       delay: 200,
@@ -29,19 +31,20 @@ const AlertsSection: React.FC = () => {
     });
     const loadAlerts = async () => {
       try {
-        const data = await fetchAlerts();
-
-        const today = new Date();
-        const filteredAlerts = data.filter((alert: Alert) => {
-          const alertDate = new Date(alert.createdAt);
-          return (
-            alertDate.getFullYear() === today.getFullYear() &&
-            alertDate.getMonth() === today.getMonth() &&
-            alertDate.getDate() === today.getDate()
-          );
-        });
-        setAlerts(filteredAlerts);
-        
+        if (token) {  // Ensure the token exists before calling fetchAlerts
+          const data = await fetchAlerts(token);  // Pass the token here
+          
+          const today = new Date();
+          const filteredAlerts = data.filter((alert: Alert) => {
+            const alertDate = new Date(alert.createdAt);
+            return (
+              alertDate.getFullYear() === today.getFullYear() &&
+              alertDate.getMonth() === today.getMonth() &&
+              alertDate.getDate() === today.getDate()
+            );
+          });
+          setAlerts(filteredAlerts);
+        }
       } catch (error) {
         console.error("Error fetching alerts:", error);
       }

@@ -6,7 +6,6 @@ import { FaGoogle, FaEnvelope, FaLock } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { loginAdmin } from "../features/auth/adminSlice";
 import ForgotPasswordModal from "./ForgotPasswordModal";
-import { store } from "../redux/store";
 import { toast } from "react-toastify";
 
 interface LoginModalProps {

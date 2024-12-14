@@ -28,7 +28,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: "http://localhost:5173", // Frontend URL
+    origin:  ['https://raksha.cloud', 'http://localhost:5173'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE','PATCH'],
     credentials: true,
   })
 );
@@ -61,11 +62,11 @@ const server = http.createServer(app);
 // Initialize Socket.IO
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173", // Frontend URL
-    methods: ["GET", "POST"],
+    origin:  ['https://raksha.cloud', 'http://localhost:5173'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE','PATCH'],
     credentials: true,
   },
-  transports: ["websocket", "polling"], // Explicitly allow WebSocket and Polling
+  transports: ["websocket", "polling"], 
 });
 
 

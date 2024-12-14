@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { FiSearch, FiBell, FiUser, FiMenu, FiX } from 'react-icons/fi';
+import {  FiBell, FiUser, FiMenu, FiX } from 'react-icons/fi';
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from 'react-router-dom';
 import { RootState } from '../redux/store';

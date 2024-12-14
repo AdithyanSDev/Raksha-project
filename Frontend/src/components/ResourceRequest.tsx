@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; 
-import { RootState } from "../redux/store";
 import { sendResourceRequest } from "../services/resourceService";
 import { CSSTransition } from "react-transition-group";
 import LocationAutocomplete from "./LocationAutocomplete";

@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import { loginSuccess } from '../features/auth/authSlice';
 import { toast } from 'react-toastify';
+import api from '../services/axiosConfig';
 
 interface OtpModalProps {
     email: string;
@@ -67,7 +67,7 @@ const OtpModal: React.FC<OtpModalProps> = ({ email, username, password, latitude
         }
 
         try {
-            const response = await axios.post('/api/users/verify-otp', { email, otp: enteredOtp, username, password, latitude, longitude, role });
+            const response = await api.post('/api/users/verify-otp', { email, otp: enteredOtp, username, password, latitude, longitude, role });
             const { token } = response.data;
 
             if (token) {
@@ -89,7 +89,7 @@ const OtpModal: React.FC<OtpModalProps> = ({ email, username, password, latitude
 
     const handleResendOtp = async () => {
         try {
-            await axios.post('/api/users/resend-otp', { email });
+            await api.post('/api/users/resend-otp', { email });
 
             // Reset state for OTP expiration and button
             setTimer(30); // Restart timer

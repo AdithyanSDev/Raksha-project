@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { fetchUsers } from '../services/UserService';
-import axios from 'axios';
+import api from '../services/axiosConfig';
 
 const StatsBoxes: React.FC = () => {
     const [totalUsers, setTotalUsers] = useState<number>(0);
@@ -15,11 +15,11 @@ const StatsBoxes: React.FC = () => {
                 setTotalUsers(users.length);
 
                 // Fetch resources
-                const resourcesResponse = await axios.get("/api/resources/resources");
+                const resourcesResponse = await api.get("/api/resources/resources");
                 setTotalResources(resourcesResponse.data.length);
 
                 // Fetch monetary donations
-                const donationsResponse = await axios.get("/api/monetary/all", {
+                const donationsResponse = await api.get("/api/monetary/all", {
                     headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
                 });
 

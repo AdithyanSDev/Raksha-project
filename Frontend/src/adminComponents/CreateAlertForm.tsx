@@ -2,6 +2,8 @@
 import React, { useState } from "react";
 import { createAlert } from "../services/alertService";
 import LocationAutocomplete from "../components/LocationAutocomplete";
+import {  useSelector } from "react-redux"; 
+import { RootState } from "../redux/store";
 
 interface AlertFormProps {
   onAlertCreated: () => void;
@@ -15,6 +17,8 @@ const AlertForm: React.FC<AlertFormProps> = ({ onAlertCreated }) => {
   const [placeName, setPlaceName] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const adminToken = useSelector((state: RootState) => state.admin.adminToken); 
 
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
@@ -35,23 +39,32 @@ const AlertForm: React.FC<AlertFormProps> = ({ onAlertCreated }) => {
 
     setIsSubmitting(true); // Disable the button and show processing state
     try {
-      await createAlert({
-        title,
-        description,
-        alertType,
-        severity,
-        placeName,
-      });
-      setIsSubmitting(false);
-      onAlertCreated();
-      // Reset form fields after successful submission
-      setTitle("");
-      setDescription("");
-      setAlertType("");
-      setSeverity("");
-      setPlaceName("");
-      setErrors({});
-    } catch (error) {
+      // Ensure adminToken is available before calling createAlert
+      if (adminToken) {
+        await createAlert(
+          {
+            title,
+            description,
+            alertType,
+            severity,
+            placeName,
+          },
+          adminToken // Pass token as the second argument
+        );
+        setIsSubmitting(false);
+        onAlertCreated();
+        // Reset form fields after successful submission
+        setTitle("");
+        setDescription("");
+        setAlertType("");
+        setSeverity("");
+        setPlaceName("");
+        setErrors({});
+      } else {
+        console.error("Admin token is missing");
+        setIsSubmitting(false);
+      }
+    }  catch (error) {
       console.error("Failed to create alert:", error);
       setIsSubmitting(false); // Re-enable the button if submission fails
     }

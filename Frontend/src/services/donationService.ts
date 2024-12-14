@@ -1,9 +1,9 @@
 // services/donationService.ts
-import axios from 'axios';
+import api from './axiosConfig';
 import { RootState } from '../redux/store';
 import { store } from '../redux/store';
 
-const API_URL = 'http://localhost:5000/api';
+
 
 export const createMaterialDonation = async (data: FormData) => {
     const state: RootState = store.getState();
@@ -14,7 +14,7 @@ export const createMaterialDonation = async (data: FormData) => {
     // Append userId to the form data
     data.append('userId', userId);
 
-    const response = await axios.post(`${API_URL}/material/create`, data, {
+    const response = await api.post('/api/material/create', data, {
         headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`,
             'Content-Type': 'multipart/form-data',
@@ -24,12 +24,12 @@ export const createMaterialDonation = async (data: FormData) => {
     return response.data;
 };
 export const fetchApprovedMaterialDonations = async () => {
-    const response = await axios.get(`${API_URL}/material/approved`);
+    const response = await api.get('/api/material/approved');
     return response.data;
   };
   
   export const fetchPendingMaterialDonations = async () => {
-    const response = await axios.get(`${API_URL}/material/pending`);
+    const response = await api.get('/api/material/pending');
     return response.data;
   };
   
@@ -38,7 +38,7 @@ export const fetchApprovedMaterialDonations = async () => {
     status: 'approved' | 'rejected',
     cancelReason?: string
   ) => {
-    const response = await axios.patch(`${API_URL}/material/${id}/status`, {
+    const response = await api.patch(`/api/material/${id}/status`, {
       status,
       cancelReason,
     });
@@ -56,7 +56,7 @@ export const createMonetaryDonation = async (data: {
     const userId = state.auth.userId;
     console.log(userId,"asofu")
     console.log(data,"data")
-    const response = await axios.post(`${API_URL}/monetary/create-order`, {
+    const response = await api.post('/api/monetary/create-order', {
         ...data,
         userId
     }, {
@@ -70,7 +70,7 @@ export const createMonetaryDonation = async (data: {
 
 
 export const fetchMonetaryDonations = async () => {
-    const response = await axios.get(`${API_URL}/monetary/all`, {
+    const response = await api.get('/api/monetary/all', {
         headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`,
         },

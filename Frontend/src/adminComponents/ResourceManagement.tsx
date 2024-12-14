@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Sidebar from "../adminComponents/Sidebar";
-import axios from "axios";
 import EditResourceModal from "../adminComponents/EditResourceModal";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
+import api from "../services/axiosConfig";
 
 interface Resource {
   image: string;
@@ -25,7 +25,7 @@ const ResourceManagement: React.FC = () => {
   useEffect(() => {
     const fetchResources = async () => {
       try {
-        const response = await axios.get("/api/resources/resources");
+        const response = await api.get("/api/resources/resources");
         setResources(response.data);
       } catch (error) {
         console.error("Error fetching resources:", error);
@@ -52,7 +52,7 @@ const ResourceManagement: React.FC = () => {
 
     if (result.isConfirmed) {
       try {
-        await axios.delete(`/api/resources/resources/${id}`);
+        await api.delete(`/api/resources/resources/${id}`);
         setResources(resources.filter((r) => r._id !== id));
         Swal.fire("Deleted!", "The resource has been deleted.", "success");
       } catch (error) {

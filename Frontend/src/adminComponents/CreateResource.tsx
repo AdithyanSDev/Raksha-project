@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Sidebar from "../adminComponents/Sidebar";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import api from "../services/axiosConfig";
 
 const CreateResource: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -61,7 +61,7 @@ const CreateResource: React.FC = () => {
     }
 
     try {
-      await axios.post("/api/resources/resources", formDataToSubmit, {
+      await api.post("/api/resources/resources", formDataToSubmit, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       navigate("/resource-management");
