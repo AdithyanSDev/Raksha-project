@@ -1,4 +1,4 @@
-import { MapContainer, TileLayer, LayersControl, useMap } from "react-leaflet";
+import { MapContainer, TileLayer, LayersControl } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import Footer from "./Footer";
 import { Link } from "react-router-dom";

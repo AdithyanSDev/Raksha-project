@@ -3,8 +3,8 @@ import { Link, useParams } from "react-router-dom";
 import { VolunteerData, fetchVolunteerById, updateVolunteerProfile } from "../services/volunteerService";
 import ProfileSidebar from "./ProfileSidebar";
 import Footer from "./Footer";
+import LocationAutocomplete from "./LocationAutocomplete";
 
-import LocationAutocomplete from "./LocationAutocomplete"; // Import the location component
 
 const VolunteerProfile: React.FC = () => {
   const { volunteerId } = useParams<{ volunteerId: string }>();
@@ -113,7 +113,58 @@ const VolunteerProfile: React.FC = () => {
                 <option value="Communication">Communication</option>
               </select>
             </div>
+            {/* Availability Dropdown */}
+            <div>
+                <label className="block font-semibold mb-1">Availability:</label>
+                <select
+                  name="availabilityStatus"
+                  value={volunteer?.availabilityStatus || ""}
+                  onChange={handleAvailabilityChange}
+                  className="border border-gray-300 p-2 w-full rounded"
+                >
+                  <option value="Available">Available</option>
+                  <option value="Busy">Busy</option>
+                  <option value="Inactive">Inactive</option>
+                </select>
+              </div>
+
+              {/* Skills */}
+              <div>
+                <label className="block font-semibold mb-1">Skills:</label>
+                <input
+                  type="text"
+                  name="skills"
+                  value={Array.isArray(volunteer?.skills) ? volunteer?.skills.join(", ") : ""}
+                  onChange={handleInputChange}
+                  className="border border-gray-300 p-2 w-full rounded"
+                />
+              </div>
+
+              {/* Location with Autocomplete */}
+              <div>
+                <label className="block font-semibold mb-1">Location:</label>
+                <LocationAutocomplete
+                  value={
+                    volunteer?.location
+                      ? `${volunteer.location.latitude}, ${volunteer.location.longitude}`
+                      : ""
+                  }
+                  onChange={(locationString) => {
+                    const [latitude, longitude] = locationString.split(", ").map(Number);
+                    setVolunteer((prev) =>
+                      prev
+                        ? {
+                            ...prev,
+                            location: { latitude, longitude },
+                          }
+                        : null
+                    );
+                  }}
+                  placeholder="Enter your location"
+                />
+              </div>
             {/* Save and Cancel Buttons */}
+
             <div className="flex space-x-4 mt-6">
               <button
                 onClick={handleSave}
@@ -139,6 +190,14 @@ const VolunteerProfile: React.FC = () => {
             <p className="text-gray-600">
               Location: {volunteer?.location ? `${volunteer.location.latitude}, ${volunteer.location.longitude}` : "N/A"}
             </p>
+            <div>
+                <strong className="text-lg font-semibold">Tasks:</strong>
+                <ul className="list-disc pl-6 text-gray-700 mt-1">
+                  {volunteer?.tasks?.map((task) => (
+                    <li key={task}>{task}</li>
+                  ))}
+                </ul>
+              </div>
             <button
               onClick={() => setIsEditing(true)}
               className="bg-blue-500 text-white px-4 py-2 rounded mt-4 hover:bg-blue-600 transition"

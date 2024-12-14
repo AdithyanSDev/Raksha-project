@@ -41,7 +41,7 @@ export const saveUserProfile = createAsyncThunk(
     const state = getState() as RootState;
     const token = state.auth.token;
     if (token) {
-      return await updateUserProfile(data, token);
+      return await updateUserProfile(data);
     }
     throw new Error('No token available');
   }

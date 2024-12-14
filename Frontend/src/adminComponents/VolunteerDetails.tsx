@@ -61,7 +61,7 @@ const VolunteerDetails: React.FC = () => {
             <p><strong>Experience:</strong> {volunteer.experience} years</p>
           </div>
           <div className="bg-gray-100 p-4 rounded-lg">
-            <p><strong>Assigned Task:</strong> {volunteer.tasks.join(", ") || "None"}</p>
+            <p><strong>Assigned Task:</strong> {volunteer.tasks?.join(", ") || "None"}</p>
           </div>
           <div className="bg-gray-100 p-4 rounded-lg">
             <p><strong>Availability Status:</strong> {volunteer.availabilityStatus}</p>

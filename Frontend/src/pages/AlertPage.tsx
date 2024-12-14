@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 import { fetchAlerts } from "../services/alertService"; // API call to fetch alerts
 import AlertForm from "../adminComponents/CreateAlertForm";
 import Sidebar from "../adminComponents/Sidebar";
+import { useSelector } from "react-redux";
+import { selectAuthToken } from "../features/auth/authSlice";
 
 interface Alert {
   id: string;
@@ -19,11 +21,11 @@ interface Alert {
 const AlertManagement: React.FC = () => {
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const [showForm, setShowForm] = useState(false);
-
+  const token = useSelector(selectAuthToken);
   useEffect(() => {
     const loadAlerts = async () => {
       try {
-        const response = await fetchAlerts();
+        const response = await fetchAlerts(token);
         setAlerts(Array.isArray(response) ? response : []);
       } catch (error) {
         console.error("Failed to load alerts:", error);

@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { fetchUsers, toggleUserStatus, IUser } from "../services/UserService";
 import Sidebar from "./Sidebar";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const UserManagement: React.FC = () => {
   const [users, setUsers] = useState<IUser[]>([]);
@@ -22,19 +25,27 @@ const UserManagement: React.FC = () => {
     };
     getUsers();
   }, []);
-
   const handleToggleStatus = async (userId: string, currentStatus: boolean) => {
     try {
       const updatedUser = await toggleUserStatus(userId, !currentStatus);
+      console.log(updatedUser)
+      // Update the user list state
       setUsers((prevUsers) =>
         prevUsers.map((user) =>
           user._id === userId ? { ...user, isBlocked: !currentStatus } : user
         )
       );
+  
+      // Display success toast
+      toast.success(
+        currentStatus ? 'User has been blocked successfully' : 'User has been unblocked successfully'
+      );
     } catch (error) {
       console.error("Failed to update user status:", error);
+      toast.error('Failed to update user status');
     }
   };
+  
 
   // Pagination logic
   const indexOfLastUser = currentPage * usersPerPage;

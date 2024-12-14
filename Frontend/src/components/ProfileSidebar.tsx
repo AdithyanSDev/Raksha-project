@@ -31,7 +31,7 @@ const ProfileSidebar: React.FC<ProfileSidebarProps> = ({
           setIsVolunteer(status);
           if (status) {
             const volunteerData = await fetchVolunteerDataByUserId(userId);
-            setVolunteerId(volunteerData._id); // Set the volunteerId based on the API response
+            setVolunteerId(volunteerData._id || null);
           }
         } catch (error) {
           console.error("Failed to fetch volunteer status or ID:", error);

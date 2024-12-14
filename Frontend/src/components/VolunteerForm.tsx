@@ -11,6 +11,37 @@ interface Location {
     latitude: number;
     longitude: number;
 }
+interface User {
+    phoneNumber?: string;
+    location: {
+      latitude: number;
+      longitude: number;
+    };
+    // Add other properties of User here
+  }
+
+export interface VolunteerData {
+   
+    _id?: string;
+    availabilityStatus?: string;
+    profilePicture?: string | undefined;
+    name?: string;
+    email?: string;
+    phone?:string
+    userId: string;
+    role: string;
+    skills: string[];
+    experience: number;
+    status?: string;
+    location: {
+        latitude: number;
+        longitude: number;
+    };
+    tasks?:string[]
+    user?: User;
+}
+
+
 
 const VolunteerRegistration: React.FC = () => {
     const [role, setRole] = useState<string>('');
@@ -52,13 +83,13 @@ const VolunteerRegistration: React.FC = () => {
             setLoading(false);
             return;
         }
-
-        const payload = {
-            userId,
-            role,
-            skills,
+        const payload :VolunteerData= {
+            userId,    
+            role,      
+            skills,    
             experience,
-            location,
+            location,  
+            
         };
 
         try {

@@ -1,4 +1,3 @@
-// VolunteerManagement.tsx
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -13,13 +12,20 @@ const VolunteerManagement: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [selectedVolunteer, setSelectedVolunteer] = useState<VolunteerData | null>(null);
   const [task, setTask] = useState<string>("");
+
   const navigate = useNavigate();
 
   useEffect(() => {
     const getVolunteers = async () => {
       try {
         const volunteerData = await fetchVolunteers();
-        setVolunteers(volunteerData);
+
+        // Filter volunteers whose status is "approved"
+        const approvedVolunteers = volunteerData.filter(
+          (volunteer) => volunteer.status === "Approved"
+        );
+
+        setVolunteers(approvedVolunteers);
         setLoading(false);
       } catch (err) {
         setError("Failed to fetch volunteers.");
@@ -30,7 +36,7 @@ const VolunteerManagement: React.FC = () => {
   }, []);
 
   const handleAssignTask = async () => {
-    if (selectedVolunteer) {
+    if (selectedVolunteer && selectedVolunteer._id) {  
       try {
         await assignTaskToVolunteer(selectedVolunteer._id, task);
         setSelectedVolunteer(null);
@@ -39,8 +45,11 @@ const VolunteerManagement: React.FC = () => {
       } catch (error) {
         toast.error("Failed to assign task. Please try again.");
       }
+    } else {
+      toast.error("Volunteer ID is missing.");
     }
   };
+  
 
   const handleViewVolunteer = (volunteer: VolunteerData) => {
     navigate(`/volunteer/${volunteer._id}`, { state: { volunteer } });
@@ -53,7 +62,15 @@ const VolunteerManagement: React.FC = () => {
     <div className="flex">
       <Sidebar />
       <div className="w-4/5 p-5">
-        <h2 className="text-2xl font-bold">Volunteer Management</h2>
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-bold">Volunteer Management</h2>
+          <button
+            className="bg-blue-500 text-white px-4 py-2 rounded"
+            onClick={() => navigate("/volunteer-requests")}
+          >
+            Requests
+          </button>
+        </div>
         <table className="table-auto w-full bg-white shadow-md rounded-lg mt-5">
           <thead>
             <tr>
@@ -99,6 +116,7 @@ const VolunteerManagement: React.FC = () => {
             ))}
           </tbody>
         </table>
+
         {selectedVolunteer && (
           <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
             <div className="bg-white p-6 rounded shadow-lg w-1/3">
@@ -106,7 +124,6 @@ const VolunteerManagement: React.FC = () => {
               <p><strong>Role:</strong> {selectedVolunteer.role}</p>
               <p><strong>Skills:</strong> {selectedVolunteer.skills.join(", ")}</p>
               <p><strong>Experience:</strong> {selectedVolunteer.experience} years</p>
-          
               
               <input
                 type="text"

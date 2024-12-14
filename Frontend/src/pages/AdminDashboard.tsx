@@ -1,5 +1,4 @@
 import React from "react";
-import BottomBoxes from "../adminComponents/BottomBoxes";
 import RegistrationChart from "../adminComponents/Chart";
 import Sidebar from "../adminComponents/Sidebar";
 import StatsBoxes from "../adminComponents/StatsBoxes";

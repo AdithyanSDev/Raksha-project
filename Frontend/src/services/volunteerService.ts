@@ -14,23 +14,23 @@ interface User {
 
 export interface VolunteerData {
    
-    _id: string;
-    availabilityStatus: string;
-    profilePicture: string | undefined;
-    name: string;
-    email: string;
-    phone:string
+    _id?: string;
+    availabilityStatus?: string;
+    profilePicture?: string | undefined;
+    name?: string;
+    email?: string;
+    phone?:string
     userId: string;
     role: string;
     skills: string[];
     experience: number;
-    status: string;
+    status?: string;
     location: {
         latitude: number;
         longitude: number;
     };
-    tasks:string[]
-    user: User;
+    tasks?:string[]
+    user?: User;
 }
 
 
