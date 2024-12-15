@@ -5,13 +5,16 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      '/api': 'http://localhost:5000',
+      '/api': {
+        target: 'http://api.raksha.cloud', // Point to your subdomain
+        changeOrigin: true,
+        secure: false, // If you don't have HTTPS, this bypasses SSL checks
+      },
       '/socket.io': {
-        target: 'http://localhost:5000',
+        target: 'http://api.raksha.cloud',
         ws: true, // Enable WebSocket proxying
-        changeOrigin: true, // Ensure proper origin headers
+        changeOrigin: true,
       },
     },
   },
-  
 });

@@ -56,7 +56,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ closeModal }) => {
   }, [dispatch, navigate]);
   
   const handleGoogleLogin = () => {
-    const googleAuthUrl = "http://localhost:5000/api/auth/google";
+    const googleAuthUrl = "http://api.raksha.cloud/api/auth/google";
     window.open(googleAuthUrl, "_self");
   };
 

@@ -28,7 +28,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin:  ['https://raksha.cloud', 'http://localhost:5173'],
+    origin:  'http://raksha-cloud.s3-website.ap-south-1.amazonaws.com',
     methods: ['GET', 'POST', 'PUT', 'DELETE','PATCH'],
     credentials: true,
   })
@@ -44,7 +44,7 @@ app.use(
   })
 );
 app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "http://localhost:5173"); // Frontend URL
+  res.setHeader("Access-Control-Allow-Origin", "'http://raksha-cloud.s3-website.ap-south-1.amazonaws.com'"); // Frontend URL
   res.setHeader("Access-Control-Allow-Methods", "GET, POST");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
   res.setHeader("Access-Control-Allow-Credentials", "true");
@@ -62,7 +62,7 @@ const server = http.createServer(app);
 // Initialize Socket.IO
 const io = new Server(server, {
   cors: {
-    origin:  ['https://raksha.cloud', 'http://localhost:5173'],
+    origin:  ['http://raksha-cloud.s3-website.ap-south-1.amazonaws.com'],
     methods: ['GET', 'POST', 'PUT', 'DELETE','PATCH'],
     credentials: true,
   },

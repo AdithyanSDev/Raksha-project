@@ -17,7 +17,7 @@ export const googleAuthCallback = (req: Request, res: Response) => {
       // Option to set a cookie with the token
       res.cookie('auth_token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production' });
       
-      res.redirect(`http://localhost:5173?token=${token}&role=${user.role}`);
+      res.redirect(`'http://raksha-cloud.s3-website.ap-south-1.amazonaws.com'?token=${token}&role=${user.role}`);
      
     })(req, res);
   };
