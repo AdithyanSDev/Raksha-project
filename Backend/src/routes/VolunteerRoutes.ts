@@ -8,7 +8,7 @@ const router = Router();
 router.post('/volunteer',authMiddleware, volunteerController.registerVolunteer);
 router.get('/volunteer/:userId', authMiddleware,volunteerController.getVolunteer);
 router.put('/volunteer/:userId',authMiddleware, volunteerController.updateVolunteer);
-router.get('/volunteers/check/:userId',authMiddleware, volunteerController.checkVolunteerStatus);
+router.get('/volunteers/check/:userId', volunteerController.checkVolunteerStatus);
 router.get('/volunteer/:userId', authMiddleware,volunteerController.getVolunteerByUserId);
 router.put('/volunteers/:id',authMiddleware, volunteerController.updateVolunteerProfile);
 
