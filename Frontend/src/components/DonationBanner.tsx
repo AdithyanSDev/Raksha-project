@@ -25,7 +25,7 @@ const DonationBanner: React.FC = () => {
       {/* Video Background */}
       <video
         className="absolute top-0 left-0 w-full h-full object-cover"
-        src="src/videos/donationbanner.mp4" // Replace with the video URL
+        src="https://raksha-project.s3.ap-south-1.amazonaws.com/banner-video/6893774-uhd_2560_1440_25fps.mp4" // Replace with the video URL
         autoPlay
         muted
         loop

@@ -13,7 +13,9 @@ export class ResourceRequestController implements IResourceRequestController {
 
   async createResourceRequest(req: Request, res: Response): Promise<void> {
     try {
+      console.log("hello",req.body)
       const resourceRequest = await this.resourceRequestService.createResourceRequest(req.body);
+      console.log(resourceRequest)
       res.status(201).json(resourceRequest);
     } catch (error) {
       handleError(res, 'Failed to create resource request', error);

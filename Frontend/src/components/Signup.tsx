@@ -30,7 +30,8 @@ const SignupModal: React.FC<SignupModalProps> = ({ closeModal }) => {
   const handleSignup = async () => {
     if (isSubmitting) return;
 
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{6,}$/;
+
 
     if (!passwordRegex.test(password)) {
         setError('Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.');

@@ -8,7 +8,7 @@ const   upload = multer({
     bucket: process.env.AWS_BUCKET_NAME as string,
     key: function (req, file, cb) {
       let folder;
-      if (file.fieldname === "resourceDocuments") {
+      if (file.fieldname === "documents") {
         folder = "resource-request-documents";
       } else if (file.fieldname === "materialImages") {
         folder = "material-donations"; // Folder for material donation images

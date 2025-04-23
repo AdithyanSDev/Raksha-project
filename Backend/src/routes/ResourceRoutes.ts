@@ -13,7 +13,7 @@ const resourceController = new ResourceController(ResourceService);
 const resourceRequestController = new ResourceRequestController();
 
 // Route to handle creating a resource request
-router.post('/request',authMiddleware, upload.single('resourceDocuments'), resourceRequestController.createResourceRequest);
+router.post('/request',authMiddleware, upload.array('documents'), resourceRequestController.createResourceRequest);
 router.get('/resource-request',authMiddleware, resourceRequestController.getAllResourceRequests.bind(resourceRequestController));
 
 // Route to create a resource

@@ -8,7 +8,7 @@ export const sendResourceRequest = async (formData: any, token: string) => {
       ...formData,
       userId, // Include userId in the request
     };
-
+console.log("data : ",dataToSend)
     const response = await api.post('/api/resources/request', dataToSend, {
       headers: {
         Authorization: `Bearer ${token}`, // Authorization is handled by axios interceptors, but you can still include it here if needed.

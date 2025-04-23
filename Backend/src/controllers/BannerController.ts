@@ -7,6 +7,7 @@ class BannerController {
         try {
             const imageUrl = (req.file as any).location;
             const banner = await BannerService.uploadBanner(imageUrl);
+            console.log('Banner uploaded:', banner); 
             res.status(201).json(banner);
         } catch (error) {
             res.status(500).json({ message: 'Failed to upload banner', error });
@@ -14,7 +15,7 @@ class BannerController {
     }
 
     async getBanner(req: Request, res: Response) {
-        try {
+        try {   
             const banner = await BannerService.getBanner();
             if (banner) {
                 res.status(200).json(banner);

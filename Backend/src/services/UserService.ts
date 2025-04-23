@@ -105,7 +105,7 @@ console.log(otp,"first")
     longitude?: number,
     role: "admin" | "user" = "user"
   ): Promise<{ user: IUser; token: string }> {
-    try {
+    try { 
       // Validate OTP
       const otpData = this.otps.get(email);
       if (!otpData) {
@@ -135,10 +135,10 @@ console.log(otp,"first")
           throw new Error("Missing user data for signup");
         }
 
-        // Hash password
+        
         const hashedPassword = await hashPassword(password);
 
-        // Create new user
+        
         const newUser: Partial<IUser> = {
           username,
           email,
@@ -150,13 +150,14 @@ console.log(otp,"first")
         user = await this.userRepository.create(newUser as IUser); // Use the `create` method from BaseRepository
       }
 
-      // OTP verification successful, delete OTP
+      
       this.otps.delete(email);
 
       // Generate access token
       const token = this.generateAccessToken(user);
       return { user, token };
     } catch (error: any) {
+      console.error("Error verifying OTP:", error.message);
       throw new Error(`Error verifying OTP: ${error.message}`);
     }
   }
@@ -285,8 +286,8 @@ console.log(otp,"first")
   async resendOtp(email: string): Promise<string> {
     const otp = Math.floor(1000 + Math.random() * 9000).toString();
     const expiresAt = Date.now() + 30 * 1000;
-    this.otps.set(email, {expiresAt,otp}); // Update OTP in temporary storage
-    await this.sendOtpEmail(email, otp); // Resend OTP via email
+    this.otps.set(email, {expiresAt,otp}); 
+    await this.sendOtpEmail(email, otp); 
     return otp;
 }
 

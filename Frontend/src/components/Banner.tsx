@@ -9,6 +9,7 @@ const Banner: React.FC = () => {
         const fetchBanner = async () => {
             try {
                 const response = await api.get('/api/admin/banner');
+                console.log('Banner response:', response.data); 
                 setBannerUrl(response.data.imageUrl);
             } catch (error) {
                 console.error('Error fetching banner:', error);

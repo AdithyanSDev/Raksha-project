@@ -20,6 +20,7 @@ const OtpModal: React.FC<OtpModalProps> = ({ email, username, password, latitude
     const [timer, setTimer] = useState(30); // 30-second timer
     const [isOtpExpired, setIsOtpExpired] = useState(false);
     const [isResendDisabled, setIsResendDisabled] = useState(true); // Disable resend initially
+    const [isResending, setIsResending] = useState(false);
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -74,13 +75,13 @@ const OtpModal: React.FC<OtpModalProps> = ({ email, username, password, latitude
                 localStorage.setItem('token', token);
                 dispatch(loginSuccess({ token }));
                 toast.success('Signed up successfully!');
-                setTimeout(() => (window.location.href = '/'), 2000);
+                setTimeout(() => (window.location.href = '/'), 2000);   
             } else {
                 setError('Invalid OTP. Please try again.');
             }
         } catch (err: any) {
             if (err.response?.status === 410) {
-                toast.error('OTP expired. Please request a new one.');
+                toast.error('OTP expired. Please request a new one.'); 
             } else {
                 setError('Error verifying OTP. Please try again.');
             }
@@ -88,20 +89,23 @@ const OtpModal: React.FC<OtpModalProps> = ({ email, username, password, latitude
     };
 
     const handleResendOtp = async () => {
+        setError('');
+        setIsResending(true); 
         try {
             await api.post('/api/users/resend-otp', { email });
 
-            // Reset state for OTP expiration and button
-            setTimer(30); // Restart timer
-            setIsResendDisabled(true); // Disable resend button
-            setIsOtpExpired(false); // Reset OTP expiration
-            setOtp(new Array(4).fill('')); // Clear input fields
+            setTimer(30); 
+            setIsResendDisabled(true); 
+            setIsOtpExpired(false);
+            setOtp(new Array(4).fill(''));
 
             toast.success('OTP resent successfully! OTP will expire in 30 seconds.');
         } catch (err) {
             setError('Error resending OTP. Please try again.');
+        }finally{
+            setIsResending(false); 
         }
-    };
+    }; 
 
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
@@ -119,23 +123,26 @@ const OtpModal: React.FC<OtpModalProps> = ({ email, username, password, latitude
                             key={index}
                             id={`otp-input-${index}`}
                             className="w-12 h-12 text-center text-xl border-2 border-gray-600 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-green-400"
-                            type="text"
+                            type="tel"
                             maxLength={1}
+                            pattern="[0-9]*"
                             value={value}
                             onChange={(e) => handleChange(e.target, index)}
                         />
                     ))}
                 </div>
                 <p className="text-center text-sm text-gray-400 mb-4">
-                    Didn't get the code?{' '}
-                    <button
-                        onClick={handleResendOtp}
-                        disabled={isResendDisabled}
-                        className="text-green-500 underline disabled:opacity-50"
-                    >
-                        Resend
-                    </button>
-                </p>
+    {isResending ? 'Resending...' : 
+        <>Didn't get the code?{' '}
+        <button
+            onClick={handleResendOtp}
+            disabled={isResendDisabled || isResending}
+            className="text-green-500 underline disabled:opacity-50"
+        >
+            Resend
+        </button></>
+    }
+</p>
                 {timer > 0 && <p className="text-center text-gray-400 text-sm mb-4">Resend OTP in {timer} seconds</p>}
                 {error && <p className="text-center text-red-500 text-sm mb-4">{error}</p>}
                 <button

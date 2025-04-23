@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import "react-toastify/dist/ReactToastify.css"; 
 import { sendResourceRequest } from "../services/resourceService";
 import { CSSTransition } from "react-transition-group";
 import LocationAutocomplete from "./LocationAutocomplete";
@@ -47,9 +47,9 @@ const ResourceRequestModal: React.FC<ResourceRequestModalProps> = ({
   });
 
   const userId = useSelector(selectAuthUserId);
-  console.log(userId);
+  console.log(userId)
   const token = useSelector(selectAuthToken);
-  console.log(token);
+  console.log(token)
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
@@ -68,11 +68,10 @@ const ResourceRequestModal: React.FC<ResourceRequestModalProps> = ({
     });
   };
 
-  const validatePhoneNumber = (phone: string): boolean => {
-    const phoneRegex = /^[1-9]\d{9}$/; // No white space, exactly 10 digits, no leading zeros
-    return phoneRegex.test(phone);
-  };
-  const [phoneError, setPhoneError] = useState<string>("");
+  // const validatePhoneNumber = (phone: string): boolean => {
+  //   const phoneRegex = /^[1-9]\d{9}$/; // No white space, exactly 10 digits, no leading zeros
+  //   return phoneRegex.test(phone);
+  // };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -109,17 +108,17 @@ const ResourceRequestModal: React.FC<ResourceRequestModalProps> = ({
     } catch (error) {
       toast.error("Error submitting the request");
     }
-    console.log(resourceRequestData);
+    console.log(resourceRequestData)
   };
 
   // Modal animations with transition
   if (!isOpen) return null;
 
-  return (
+  return (  
     <>
-      <ToastContainer position="top-right" autoClose={3000} />
+       <ToastContainer position="top-right" autoClose={3000} />
       <CSSTransition in={isOpen} timeout={300} classNames="modal" unmountOnExit>
-        <div className="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-80 transition-opacity duration-300 ease-in-out z-[1100]">
+        <div className="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-80 transition-opacity duration-300 ease-in-out z-50">
           <div className="modal-container relative bg-white p-8 rounded-xl shadow-2xl max-h-[90vh] w-full max-w-4xl overflow-y-auto transform transition-transform duration-300 ease-in-out scale-105">
             <button
               className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 z-[1101]"
@@ -183,8 +182,8 @@ const ResourceRequestModal: React.FC<ResourceRequestModalProps> = ({
 
               {/* Location */}
               <label className="block text-sm font-medium text-gray-700">
-                Location
-              </label>
+                  Location
+                </label>
               <LocationAutocomplete
                 value={formData.location}
                 onChange={(location) => setFormData({ ...formData, location })}
@@ -215,24 +214,11 @@ const ResourceRequestModal: React.FC<ResourceRequestModalProps> = ({
                   type="text"
                   name="contactInfo"
                   value={formData.contactInfo}
-                  onChange={(e) => {
-                    const value = e.target.value.trim(); // Remove white spaces from start and end
-                    if (validatePhoneNumber(value)) {
-                      setFormData({ ...formData, contactInfo: value });
-                      setPhoneError(""); // Clear any previous error
-                    } else {
-                      setPhoneError(
-                        "Invalid phone number. Must be 10 digits with no leading zero and no white spaces."
-                      );
-                    }
-                  }}
+                  onChange={handleChange}
                   className="w-full mt-1 p-3 border rounded-lg focus:ring-2 focus:ring-blue-400"
                   placeholder="Enter contact info"
                   required
                 />
-                {phoneError && (
-                  <p className="mt-2 text-sm text-red-600">{phoneError}</p>
-                )}
               </div>
 
               {/* Other fields like urgency level, disaster type, number of people affected, additional info, etc */}

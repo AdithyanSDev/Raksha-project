@@ -6,12 +6,12 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://api.raksha.cloud', // Point to your subdomain
+        target: 'http://localhost:5000', // Point to your subdomain
         changeOrigin: true,
         secure: false, // If you don't have HTTPS, this bypasses SSL checks
       },
       '/socket.io': {
-        target: 'http://api.raksha.cloud',
+        target: 'https://api.raksha.cloud',
         ws: true, // Enable WebSocket proxying
         changeOrigin: true,
       },

@@ -63,8 +63,13 @@ const Header: React.FC = () => {
 
     return (
         <header
-            className={`fixed top-0 left-0 w-full z-20 p-4 flex justify-between items-center transition-all duration-300 ${isScrolled ? 'bg-white shadow-md' : 'bg-transparent'}`}
-        >
+        className={`fixed top-0 left-0 w-full ${
+            isScrolled ? 'z-10' : 'z-20'
+        } p-4 flex justify-between items-center transition-all duration-300 ${
+            isScrolled ? 'bg-green-100 shadow-md' : 'bg-transparent'
+        }`}
+    >
+    
             <div
                 className={`font-bold text-2xl ${isScrolled ? 'text-gray-900' : 'text-white'} cursor-pointer`}
                 onClick={() => { navigate('/') }}

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import MaterialDonationForm from '../components/MaterialDonationForm';
 import MonetaryDonationForm from '../components/MonetaryDonationForm';
 import Footer from '../components/Footer';
-import picture from '../images/donation.avif';
+import picture from '../assets/images/donation.avif';
 
 const DonationPage: React.FC = () => {
     const [activeForm, setActiveForm] = useState<'material' | 'monetary' | null>(null);

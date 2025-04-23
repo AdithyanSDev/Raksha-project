@@ -16,6 +16,9 @@ import googleAuthRoutes from "./routes/auth";
 import "./googleAuth/passport";
 import DonationRoutes from "./routes/DonationRoutes";
 import alertRoutes from "./routes/alertRoutes";
+import path from "path";
+
+
 
 import { AlertService } from "./services/AlertService";
 
@@ -25,14 +28,21 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: [
-      "http://raksha-cloud.s3-website.ap-south-1.amazonaws.com",
-      "http://localhost:5173",
-    ],
+    origin: "http://localhost:5173",
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     credentials: true,
   })
 );
+
+const currentDir = path.resolve();
+const frontendPath = path.join(currentDir, "../Frontend/dist");
+
+
+app.use(express.static(frontendPath));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(frontendPath, "index.html"));
+});
 
 // Initialize session middleware
 app.use(

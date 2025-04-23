@@ -128,7 +128,7 @@ const VolunteerRegistration: React.FC = () => {
                         communities during emergencies.
                     </p>
                     <img
-                        src="src/images/Volunteer.jpeg"
+                        src="src/assets/images/Volunteer.jpeg"
                         alt="Volunteer illustration"
                         className="w-full rounded-lg shadow-md animate-fadeInSlow"
                     />

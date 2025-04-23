@@ -28,7 +28,7 @@ const ResourceRequestSchema = new mongoose.Schema({
   disasterType: { type: String, required: true },
   numberOfPeopleAffected: { type: Number, required: true },
   additionalInfo: { type: String },
-  documents: [{ type: String }],
+  documents: { type: [String], default: [] },
   status: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' },
   rejectionReason: { type: String }, // Optional field for rejection reason
 }, { timestamps: true });
